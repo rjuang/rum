@@ -7,8 +7,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from rum_buttons import Button
 from rum_threading import Scheduler
 
-class ButtonsTests(unittest.TestCase):
 
+class ButtonsTests(unittest.TestCase):
     def test_shortPress_buttonWithListeners_listenersTrigger(self):
         scheduler = Scheduler()
         button = Button(scheduler)
