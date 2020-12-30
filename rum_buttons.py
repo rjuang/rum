@@ -69,65 +69,56 @@ class Button:
             self.dispatch_short_press()
 
 
-if __name__ == '__main__':
-    import time
+class ToggleButton:
+    """ Buttons that maintain an On/Off or True/False state. """
+    def __init__(self, scheduler: rum_threading.Scheduler, state=False):
+        self._button = Button(scheduler)
+        # Treat both short/long release as a regular press to toggle.
+        self._button.set_short_press(self.toggle)
+        self._button.set_long_press(self.toggle)
 
-    scheduler = rum_threading.Scheduler()
-    button = Button(scheduler)
-    long_count = 0
-    short_count = 0
+        self._listener = None
+        self._state = state
 
-    def inc_long_count():
-        global long_count
-        long_count += 1
+    def toggle(self):
+        """ Manually toggle the state of the button.
 
-    def inc_short_count():
-        global short_count
-        short_count += 1
+        Note: This will also trigger the listener for the updated state.
+        """
+        self._state = not self._state
+        self._dispatch_state_listener()
 
-    # SCENARIO: Button with short and long press event handlers. Short press.
-    button.set_short_press(inc_short_count)
-    button.set_long_press(inc_long_count)
-    button.notify_touch()
-    button.notify_touch(release=True)
-    # Verify short event should trigger
-    assert short_count == 1
-    scheduler.idle(override_time=time.monotonic() + 1)
-    # Verify long event never triggers
-    assert long_count == 0
+    def get(self):
+        """ Return the current state of the button. """
+        return self._state
 
-    # SCENARIO: Button with short and long press event handlers. Long press.
-    long_count = 0
-    short_count = 0
-    button.notify_touch()
-    scheduler.idle(override_time=time.monotonic() + 1)
-    button.notify_touch(release=True)
-    # Verify short event never triggered
-    assert short_count == 0
-    # Verify long event triggered
-    assert long_count == 1
+    def set(self, new_state: bool):
+        """ Manually set the state of the button.
 
-    # SCENARIO: Button with only long press event handler. Short press.
-    long_count = 0
-    short_count = 0
-    button.set_short_press(None)
-    button.set_long_press(inc_long_count)
-    button.notify_touch()
-    button.notify_touch(release=True)
-    # Verify short event never triggered
-    assert short_count == 0
-    # Verify long event never triggered
-    assert long_count == 0
+        Note: This will only trigger the listener if the state changed
+        """
+        dispatch = new_state != self._state
+        self._state = new_state
+        if dispatch:
+            self._dispatch_state_listener()
 
-    # SCENARIO: Button with only short press event handler. Long press.
-    long_count = 0
-    short_count = 0
-    button.set_short_press(inc_short_count)
-    button.set_long_press(None)
-    button.notify_touch()
-    scheduler.idle(override_time=time.monotonic() + 1)
-    button.notify_touch(release=True)
-    # Verify short event never triggered
-    assert short_count == 0
-    # Verify long event never triggered
-    assert long_count == 0
+    def set_change_listener(self, listener):
+        """ Set the listener that is triggered when the button state changes.
+
+        :param listener:  the listener to trigger on button state changes or
+        None to drop.
+        """
+        self._listener = listener
+
+    def notify_touch(self, release=False):
+        """ Notify the toggle button that a touch event has occurred.
+
+        :param release:  set to True to indicate that a touch up event has
+        occurred. Leave False (default) to indicate that a touch down event has
+        occurred.
+        """
+        self._button.notify_touch(release)
+
+    def _dispatch_state_listener(self):
+        if self._listener:
+            self._listener()
