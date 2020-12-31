@@ -31,6 +31,8 @@ class Scheduler:
         :param task: function to schedule for execution at a later time.
         :param delay_ms: the amount of time in milliseconds to wait until
         executing the function.
+        :param override_time: override the value of the current time in seconds.
+         If None (default), the time is retrieved from time.monotonic().
         :return: the entry corresponding to the task. This can be used to cancel
         the scheduled task.
         """
@@ -54,7 +56,11 @@ class Scheduler:
             return False
 
     def idle(self, override_time=None):
-        """ Process an idle loop and processes tasks to be executed. """
+        """ Process an idle loop and processes tasks to be executed.
+
+        :param override_time: override the value of the current time in seconds.
+         If None (default), the time is retrieved from time.monotonic().
+        """
         time_ms = self._time_ms(override_time)
 
         while self._tasks_pq:
