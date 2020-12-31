@@ -8,7 +8,34 @@ information:
   - Button functionality. Is the button controlling mixer or channel currently.
 """
 
-class IterableState:
+
+class State:
+    """ Interface for a state.
+
+    Any class that wants to act as a state must extend this class and override
+    its methods.
+    """
+    def name(self):
+        """ Returns string representing the name of the state. """
+        raise NotImplementedError()
+
+    def get(self):
+        """ Returns the current value of the state. """
+        raise NotImplementedError()
+
+    def push(self):
+        """ Push the current state value to its destination target. """
+        raise NotImplementedError()
+
+    def pull(self):
+        """ Fetch the current state value from its source.
+
+        :return: True if the state changed. False if state remained the same.
+        """
+        raise NotImplementedError()
+
+
+class IterableState(State):
     """ State with a limited number of values that can be iterated through.
 
     A state variable with a limited number of values that it can be set to.
