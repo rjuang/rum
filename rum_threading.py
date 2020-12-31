@@ -1,4 +1,5 @@
 import _heapq
+import itertools
 import time
 
 
@@ -11,9 +12,13 @@ class Scheduler:
     granularity of the scheduler will depend on the execution interval.
     """
 
-    def __init__(self):
+    def __init__(self, time_fn=None):
         # Holds a list of the entries containing (timestamp, task_fn)
         self._tasks_pq = []
+        self._counter = itertools.count()
+        if time_fn is None:
+            time_fn = time.monotonic
+        self._time_fn = time_fn
 
     def _time_ms(self, input_time):
         """ Return current timestamp in seconds if provided input_time is None.
@@ -23,7 +28,7 @@ class Scheduler:
         milliseconds.
         """
         return (input_time if input_time is not None
-                else time.monotonic()) * 1000
+                else self._time_fn()) * 1000
 
     def schedule(self, task, delay_ms=0, override_time=None):
         """ Schedule a task to be executed after a delay.
@@ -37,7 +42,9 @@ class Scheduler:
         the scheduled task.
         """
         time_ms = self._time_ms(override_time)
-        entry = (time_ms + delay_ms, task)
+        # Add a monotonic value before the task to avoid any ties since lambda
+        # functions are not comparable.
+        entry = (time_ms + delay_ms, next(self._counter), task)
         _heapq.heappush(self._tasks_pq, entry)
         return entry
 
@@ -70,5 +77,5 @@ class Scheduler:
                 # Put back on queue and wait until next refresh cycle.
                 _heapq.heappush(self._tasks_pq, entry)
                 return
-            task = entry[1]
+            task = entry[-1]
             task()
