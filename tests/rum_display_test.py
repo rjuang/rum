@@ -1,11 +1,10 @@
-import itertools
-import os
 import sys
 import unittest
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, '..')
 from rum_display import DirectDisplay, DisplayWindow, ScrollingDisplay
 from rum_threading import Scheduler
+from tests.testutils import FakeClock
 
 
 class DirectDisplayTests(unittest.TestCase):
@@ -133,17 +132,12 @@ class DisplayWindowTest(unittest.TestCase):
 
 class ScrollingDisplayTest(unittest.TestCase):
     def setUp(self):
-        self._time_sequence = itertools.count(0.0, 0.0001)
-        self._last_timestamp = 0
+        self._clock = FakeClock()
 
         def push_fn(lines):
             self._pushed = lines
 
-        def time_fn():
-            self._last_timestamp = next(self._time_sequence)
-            return self._last_timestamp
-
-        self._scheduler = Scheduler(time_fn=time_fn)
+        self._scheduler = Scheduler(time_fn=self._clock.time)
         self._display = (DirectDisplay.Builder()
                          .set_lines(5)
                          .set_line_width(16)
@@ -190,7 +184,8 @@ class ScrollingDisplayTest(unittest.TestCase):
     def test_allShortLines_noScrolling(self):
         self._window[0] = 'hello'
         self._window[1] = 'world'
-        self._scheduler.idle(override_time=1)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello', self._window[0])
         self.assertEqual('world', self._window[1])
@@ -206,7 +201,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self._window[1] = 'world!'
 
         # Iteration 1
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -218,7 +214,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 2
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -230,7 +227,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 3
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -242,7 +240,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 4
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -254,7 +253,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 5
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -266,22 +266,26 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 6
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****!  he******'), self._display[2])
         self.assertEqual(list('*****  wor******'), self._display[3])
 
         # Iteration 7
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****  hel******'), self._display[2])
         self.assertEqual(list('***** worl******'), self._display[3])
 
         # Iteration 8
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('***** hell******'), self._display[2])
         self.assertEqual(list('*****world******'), self._display[3])
 
         # Iteration 9
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****hello******'), self._display[2])
         self.assertEqual(list('*****orld!******'), self._display[3])
 
@@ -290,7 +294,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self._window[1] = 'world!'
 
         # Iteration 1
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -302,7 +307,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 2
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -314,28 +320,34 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 3
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****hello******'), self._display[2])
         self.assertEqual(list('*****ld!  ******'), self._display[3])
 
         # Iteration 4
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****d!  w******'), self._display[3])
 
         # Iteration 5
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****!  wo******'), self._display[3])
 
         # Iteration 6
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****  wor******'), self._display[3])
 
         # Iteration 7
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('***** worl******'), self._display[3])
 
         # Iteration 8
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
         self.assertEqual(list('*****world******'), self._display[3])
 
     def test_updateTextWhileScrolling_startsBackAt0(self):
@@ -343,7 +355,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self._window[1] = 'world!'
 
         # Iteration 1
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -355,7 +368,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 2
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])
@@ -370,7 +384,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self._window[0] = 'hello!!'
 
         # Iteration 3
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual(list('****************'), self._display[0])
         self.assertEqual(list('****************'), self._display[1])
@@ -379,7 +394,8 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('****************'), self._display[4])
 
         # Iteration 4
-        self._scheduler.idle(override_time=self._last_timestamp + 0.250)
+        self._clock.advance_by(0.250)
+        self._scheduler.idle()
 
         self.assertEqual('hello!!', self._window[0])
         self.assertEqual('world!', self._window[1])

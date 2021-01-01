@@ -1,9 +1,7 @@
-import os
 import sys
 import unittest
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+sys.path.insert(0, '..')
 from rum_midi import MidiMessage, Matchers
 
 

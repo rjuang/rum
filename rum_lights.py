@@ -9,7 +9,7 @@ class Light:
 
 class ToggleLight(Light):
     """ Interface for a light source that can be toggled on the device. """
-    def toggle(self): raise NotImplementedError
+    def toggle(self, bool_value=None): raise NotImplementedError
 
 
 class OnOffLight(ToggleLight):
@@ -27,9 +27,12 @@ class OnOffLight(ToggleLight):
         """ Returns the state of the light. """
         return self._status
 
-    def toggle(self):
+    def toggle(self, bool_value=None):
         """ Toggle the state of the light and returns updated state. """
-        self.set(not self._status)
+        if bool_value is not None:
+            self.set(bool_value)
+        else:
+            self.set(not self._status)
         return self._status
 
     def set(self, state, force_update=False):
@@ -52,6 +55,9 @@ class OnOffLight(ToggleLight):
             else:
                 if self._off_fn is not None:
                     self._off_fn()
+
+    def __repr__(self):
+        return f'[OnOffLight: {"ON" if self._status else "OFF"}]'
 
 
 class ColorLight(Light):
@@ -90,6 +96,9 @@ class ColorLight(Light):
     def __bool__(self):
         return self._color != 0
 
+    def __repr__(self):
+        return f'[ColorLight: 0x{self._color:02X}]'
+
 
 class ColorToggleLight(ToggleLight):
     """ Adapts a ColorLight so that it behaves as a toggle light. """
@@ -102,11 +111,15 @@ class ColorToggleLight(ToggleLight):
     def __bool__(self):
         return self._light.get() != self._off_color
 
-    def toggle(self):
-        if self._light.get() == self._off_color:
-            self._light.set(self._on_color)
+    def toggle(self, bool_value=None):
+        if bool_value is None:
+            if self._light.get() == self._off_color:
+                self._light.set(self._on_color)
+            else:
+                self._light.set(self._off_color)
         else:
-            self._light.set(self._off_color)
+            self._light.set(self._on_color if bool_value
+                            else self._off_color)
         return self._light.get() != self._off_color
 
     def get(self):
@@ -115,3 +128,6 @@ class ColorToggleLight(ToggleLight):
     def set(self, value, force_update=False):
         self._light.set(value, force_update=force_update)
 
+    def __repr__(self):
+        return (f'[ColorToggleLight: {"ON" if bool(self) else "OFF"} '
+                f'| {self._light}]')

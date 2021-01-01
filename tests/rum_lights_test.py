@@ -1,9 +1,7 @@
-import os
 import sys
 import unittest
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+sys.path.insert(0, '..')
 from rum_lights import OnOffLight, ColorLight, ColorToggleLight
 
 
@@ -52,6 +50,32 @@ class OnOffLightTests(unittest.TestCase):
         self.assertTrue(self._light.get())
         self.assertEqual(2, self._on_count)
         self.assertEqual(0, self._off_count)
+
+    def test_setValueWithToggleKeyword_setsValueAppropriately(self):
+        self._light.toggle(bool_value=False)
+        self.assertFalse(self._light)
+        self.assertFalse(self._light.get())
+        self.assertEqual(0, self._on_count)
+        self.assertEqual(0, self._off_count)
+
+        self._light.toggle(bool_value=False)
+        self.assertFalse(self._light)
+        self.assertFalse(self._light.get())
+        self.assertEqual(0, self._on_count)
+        self.assertEqual(0, self._off_count)
+
+        self._light.toggle(bool_value=True)
+        self.assertTrue(self._light)
+        self.assertTrue(self._light.get())
+        self.assertEqual(1, self._on_count)
+        self.assertEqual(0, self._off_count)
+
+        self._light.toggle(bool_value=True)
+        self.assertTrue(self._light)
+        self.assertTrue(self._light.get())
+        self.assertEqual(1, self._on_count)
+        self.assertEqual(0, self._off_count)
+
 
 
 class ColorLightTests(unittest.TestCase):
@@ -103,6 +127,22 @@ class ColorToggleLightsTest(unittest.TestCase):
         self.assertEqual(15, self._light.get())
         self.assertFalse(self._light)
         self.assertEqual([30, 15], self._update_values)
+
+    def test_whenToggleColorsWithSpecifiedValue_checkCorrectValue(self):
+        self.assertFalse(self._light.toggle(bool_value=False))
+        self.assertFalse(self._light.toggle(bool_value=False))
+        self.assertEqual(15, self._light.get())
+        self.assertFalse(self._light)
+        self.assertEqual([], self._update_values)
+
+        self.assertTrue(self._light.toggle(bool_value=True))
+        self.assertEqual(30, self._light.get())
+        self.assertTrue(self._light)
+        self.assertEqual([30], self._update_values)
+        self.assertTrue(self._light.toggle(bool_value=True))
+        self.assertEqual(30, self._light.get())
+        self.assertTrue(self._light)
+        self.assertEqual([30], self._update_values)
 
 
 if __name__ == '__main__':

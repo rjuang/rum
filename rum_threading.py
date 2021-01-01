@@ -20,28 +20,20 @@ class Scheduler:
             time_fn = time.monotonic
         self._time_fn = time_fn
 
-    def _time_ms(self, input_time):
-        """ Return current timestamp in seconds if provided input_time is None.
+    def _time_ms(self):
+        """ Return current timestamp in milliseconds. """
+        return self._time_fn() * 1000
 
-        :param input_time: value in seconds to use as the current time or None.
-        :return: the input time in milliseconds or the current time in
-        milliseconds.
-        """
-        return (input_time if input_time is not None
-                else self._time_fn()) * 1000
-
-    def schedule(self, task, delay_ms=0, override_time=None):
+    def schedule(self, task, delay_ms=0):
         """ Schedule a task to be executed after a delay.
 
         :param task: function to schedule for execution at a later time.
         :param delay_ms: the amount of time in milliseconds to wait until
         executing the function.
-        :param override_time: override the value of the current time in seconds.
-         If None (default), the time is retrieved from time.monotonic().
         :return: the entry corresponding to the task. This can be used to cancel
         the scheduled task.
         """
-        time_ms = self._time_ms(override_time)
+        time_ms = self._time_ms()
         # Add a monotonic value before the task to avoid any ties since lambda
         # functions are not comparable.
         entry = (time_ms + delay_ms, next(self._counter), task)
@@ -62,14 +54,9 @@ class Scheduler:
             # Entry was already removed and executed.
             return False
 
-    def idle(self, override_time=None):
-        """ Process an idle loop and processes tasks to be executed.
-
-        :param override_time: override the value of the current time in seconds.
-         If None (default), the time is retrieved from time.monotonic().
-        """
-        time_ms = self._time_ms(override_time)
-
+    def idle(self):
+        """ Process an idle loop and processes tasks to be executed. """
+        time_ms = self._time_ms()
         while self._tasks_pq:
             entry = _heapq.heappop(self._tasks_pq)
             if entry[0] > time_ms:
