@@ -29,7 +29,7 @@ class ButtonsTests(unittest.TestCase):
         self._button.notify_touch(release=True)
 
         self.assertEqual(1, self._short_count)
-        self._clock.advance_by(1)
+        self._clock.advance(1)
         self._scheduler.idle()
         self.assertEqual(0, self._long_count)
 
@@ -38,7 +38,7 @@ class ButtonsTests(unittest.TestCase):
         self._short_count = 0
 
         self._button.notify_touch()
-        self._clock.advance_by(1)
+        self._clock.advance(1)
         self._scheduler.idle()
         self._button.notify_touch(release=True)
 
@@ -56,7 +56,7 @@ class ButtonsTests(unittest.TestCase):
     def test_longPress_buttonWithShortPressListenerOnly_noTrigger(self):
         self._button.set_long_press(None)
         self._button.notify_touch()
-        self._clock.advance_by(1)
+        self._clock.advance(1)
         self._scheduler.idle()
         self._button.notify_touch(release=True)
 

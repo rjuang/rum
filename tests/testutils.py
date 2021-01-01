@@ -3,14 +3,14 @@ import itertools
 
 
 class FakeClock:
-    """ Fake clock that returns an incrementing value as the time. """
+    """ Fake clock that with a time value that can be manually controlled. """
 
     def __init__(self, start=0.0, step=0.0001):
-        """ Construct a fake clock with the given and increments by step.
+        """ Construct a clock with the given start and default step increment.
 
         :param start: the starting time value to return for the first call.
-        :param step: the time increment that is returned for each susequent
-        calls.
+        :param step: the default time increment to advance the clock by if
+        advance is called with no arguments.
         """
         self._start = start
         self._step = step
@@ -19,12 +19,19 @@ class FakeClock:
 
     def time(self):
         """ Fetch the current time """
-        self._last_timestamp = self._start + next(self._counter) * self._step
         return self._last_timestamp
 
-    def advance_by(self, delta):
-        self._start += delta
+    def advance(self, amount=None):
+        """ Advance the current time.
 
-    def last_reported(self):
-        """ Returns the last timestamp fetched. """
+        The time is advanced by the default step or the provided amount if one
+        is provided.
+        :param amount: optional amount to advance the time b
+        :return the updated time.
+        """
+        if amount is not None:
+            self._start += amount
+            self._last_timestamp += amount
+        else:
+            self._last_timestamp = self._start + next(self._counter) * self._step
         return self._last_timestamp
