@@ -4,10 +4,11 @@ from rum_threading import Scheduler
 
 class Animation:
     """ Interface for an animation concept. """
-    def start(self, initial_delay=True): raise NotImplementedError()
-    def stop(self): raise NotImplementedError()
-    def reset(self): raise NotImplementedError()
-    def is_running(self): raise NotImplementedError()
+    def start_animation(self, initial_delay=True): raise NotImplementedError()
+    def step_animation(self): raise NotImplementedError()
+    def stop_animation(self): raise NotImplementedError()
+    def reset_animation(self): raise NotImplementedError()
+    def is_animation_running(self): raise NotImplementedError()
     def set_update_interval(self, interval_ms): raise NotImplementedError()
 
 
@@ -17,6 +18,7 @@ class BlinkingAnimation(Animation):
     If a ColorLight source needs to be blinked, then it needs to be re-defined
     (via a facade/view pattern) as a Light source.
     """
+
     def __init__(self, light: ToggleLight, scheduler: Scheduler,
                  update_interval_ms=1000):
         self._light = light
@@ -33,7 +35,7 @@ class BlinkingAnimation(Animation):
         self._animation_task = self._scheduler.schedule(
             self._toggle_blink, delay_ms=self._update_interval_ms)
 
-    def start(self, initial_delay=True):
+    def start_animation(self, initial_delay=True):
         """ Starts running the blink animation.
 
         This command is a no-op if the animation is already started.
@@ -45,7 +47,11 @@ class BlinkingAnimation(Animation):
         self._animation_task = self._scheduler.schedule(
             self._toggle_blink, delay_ms=self._update_interval_ms)
 
-    def stop(self):
+    def step_animation(self):
+        """ Manually step blink the animation. """
+        self._light.toggle()
+
+    def stop_animation(self):
         """ Cancels the any currently running animation.
 
         This command is a no-op if the animation is already stopped.
@@ -57,11 +63,11 @@ class BlinkingAnimation(Animation):
             self._scheduler.cancel(self._animation_task)
         self._animation_task = None
 
-    def reset(self):
+    def reset_animation(self):
         # No-op since blinking just starts off from where last left off.
         pass
 
-    def is_running(self):
+    def is_animation_running(self):
         """ Returns True if the blink animation is scheduled/running."""
         return self._run_animation
 
@@ -97,10 +103,7 @@ class SequentialAnimation(Animation):
         for lights in light_frames:
             self._all_lights = self._all_lights.union(lights)
 
-    def _animate_frame(self):
-        if not self._run_animation:
-            return
-
+    def _animate_step(self):
         current_frame = set(self._light_frames[self._current_index])
         if self._current_index == 0:   # For first frame, reset all lights.
             turn_off = self._all_lights.difference(current_frame)
@@ -116,18 +119,29 @@ class SequentialAnimation(Animation):
         self._last_frame = current_frame
         self._current_index += 1
         self._current_index %= len(self._light_frames)
-        self._animation_task = self._scheduler.schedule(
-            self._animate_frame, delay_ms=self._update_interval_ms)
 
-    def start(self, initial_delay=False):
+    def _schedule_animation(self):
+        if not self._run_animation:
+            return
+        self._animate_step()
+        if not self._loop and self._current_index == 0:
+            # If not looping, stop animation when loop back.
+            self.stop_animation()
+        self._animation_task = self._scheduler.schedule(
+            self._schedule_animation, delay_ms=self._update_interval_ms)
+
+    def start_animation(self, initial_delay=False):
         if self._run_animation:
             return
         self._run_animation = True
         delay_ms = self._update_interval_ms if initial_delay else 0
         self._animation_task = self._scheduler.schedule(
-            self._animate_frame, delay_ms=delay_ms)
+            self._schedule_animation, delay_ms=delay_ms)
 
-    def stop(self):
+    def step_animation(self):
+        self._animate_step()
+
+    def stop_animation(self):
         if not self._run_animation:
             return
 
@@ -136,13 +150,12 @@ class SequentialAnimation(Animation):
             self._scheduler.cancel(self._animation_task)
             self._animation_task = None
 
-    def reset(self):
+    def reset_animation(self):
         # Reset the animation to start from beginning.
         self._current_index = 0
 
-    def is_running(self):
+    def is_animation_running(self):
         return self._run_animation
 
     def set_update_interval(self, interval_ms):
         self._update_interval_ms = interval_ms
-

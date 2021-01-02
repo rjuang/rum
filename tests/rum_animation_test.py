@@ -23,7 +23,7 @@ class BlinkingAnimationTest(unittest.TestCase):
         self.assertFalse(self._light)
 
     def test_blinkingAnimation_blinkingAnimationAfterStart(self):
-        self._animation.start()
+        self._animation.start_animation()
         self.assertFalse(self._light)
         # Test 5 iterations of blinking
         for _ in range(5):
@@ -36,11 +36,11 @@ class BlinkingAnimationTest(unittest.TestCase):
             self.assertFalse(self._light)
 
     def test_whenAnimationStarted_stopBlinkingStops(self):
-        self._animation.start()
+        self._animation.start_animation()
 
         self._clock.advance(0.750)
         self._scheduler.idle()
-        self._animation.stop()
+        self._animation.stop_animation()
         self.assertTrue(self._light)
 
         self._clock.advance(0.250)
@@ -48,11 +48,11 @@ class BlinkingAnimationTest(unittest.TestCase):
         self.assertTrue(self._light)
 
     def test_whenAnimationStartedStopped_startBlinkingStarts(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._clock.advance(0.750)
         self._scheduler.idle()
-        self._animation.stop()
-        self._animation.start()
+        self._animation.stop_animation()
+        self._animation.start_animation()
 
         # Light should be on before we step through time
         self.assertTrue(self._light)
@@ -93,26 +93,26 @@ class SequentialAnimationTest(unittest.TestCase):
 
     def test_animationNotStarted_initialStateCorrect(self):
         self.assertEqual([1, 0, 1, 0, 1], self._data)
-        self.assertFalse(self._animation.is_running())
+        self.assertFalse(self._animation.is_animation_running())
 
     def test_animationStarted_isRunningReturnsTrue(self):
-        self._animation.start()
-        self.assertTrue(self._animation.is_running())
+        self._animation.start_animation()
+        self.assertTrue(self._animation.is_animation_running())
         self.assertEqual([1, 0, 1, 0, 1], self._data)
 
     def test_animationStopped_isRunningReturnsFalse(self):
-        self._animation.start()
-        self._animation.stop()
-        self.assertFalse(self._animation.is_running())
+        self._animation.start_animation()
+        self._animation.stop_animation()
+        self.assertFalse(self._animation.is_animation_running())
         self.assertEqual([1, 0, 1, 0, 1], self._data)
 
     def test_animationStarted_firstFrameAnimatesImmediately(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._scheduler.idle()
         self.assertEqual([1, 0, 0, 0, 0], self._data)
 
     def test_animationStarted_secondFramesAndOnwardsSpacedAppropriately(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._scheduler.idle()
         self._scheduler.idle()
 
@@ -135,7 +135,7 @@ class SequentialAnimationTest(unittest.TestCase):
             pattern)
 
     def test_animationStarted_animationTurnsOffLightsAtLoopCorrectly(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._scheduler.idle()
         self._scheduler.idle()
 
@@ -157,11 +157,11 @@ class SequentialAnimationTest(unittest.TestCase):
         self.assertEqual([1, 0, 0, 0, 0], self._data)
 
     def test_animationStopped_animationNoLongerContinues(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._scheduler.idle()
         self._clock.advance(0.250)
         self._scheduler.idle()
-        self._animation.stop()
+        self._animation.stop_animation()
 
         for _ in range(2):
             self._clock.advance(0.250)
@@ -170,20 +170,20 @@ class SequentialAnimationTest(unittest.TestCase):
         self.assertEqual([0, 1, 0, 0, 0], self._data)
 
     def test_animationRestarted_animationShouldPickUpFromWhereItLeftOff(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._scheduler.idle()
 
         # Advance one frame before stopping
         self._clock.advance(0.250)
         self._scheduler.idle()
-        self._animation.stop()
+        self._animation.stop_animation()
 
         # Random advancing.
         for _ in range(2):
             self._clock.advance(0.250)
             self._scheduler.idle()
 
-        self._animation.start(initial_delay=True)
+        self._animation.start_animation(initial_delay=True)
         self._scheduler.idle()
         # Light pattern should be where it left off
         self.assertEqual([0, 1, 0, 0, 0], self._data)
@@ -205,21 +205,21 @@ class SequentialAnimationTest(unittest.TestCase):
         self.assertEqual([1, 0, 0, 0, 0], self._data)
 
     def test_resetAnimation_restartsFromBeginning(self):
-        self._animation.start()
+        self._animation.start_animation()
         self._scheduler.idle()
 
         # Advance one frame before stopping
         self._clock.advance(0.250)
         self._scheduler.idle()
-        self._animation.stop()
+        self._animation.stop_animation()
 
         # Random advancing.
         for _ in range(2):
             self._clock.advance(0.250)
             self._scheduler.idle()
 
-        self._animation.reset()
-        self._animation.start()
+        self._animation.reset_animation()
+        self._animation.start_animation()
         self._scheduler.idle()
         # Light pattern should be where it left off
         self.assertEqual([1, 0, 0, 0, 0], self._data)
