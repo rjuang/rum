@@ -5,6 +5,7 @@ class Light:
     """ Interface for a light source on the device. """
     def get(self): raise NotImplementedError()
     def set(self, value, force_update=False): raise NotImplementedError()
+    def __bool__(self): raise NotImplementedError()
 
 
 class ToggleLight(Light):

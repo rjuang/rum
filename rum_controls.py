@@ -17,13 +17,23 @@ class Blinkable:
     def is_blinking(self): raise NotImplementedError()
 
 
+class Beatable:
+    """ Interface for classes that can sync to a beat. """
+    def beat(self): raise NotImplementedError()
+    def reset(self): raise NotImplementedError()
+
+
 class BlinkableLight(Blinkable, ToggleLight):
     """ A light that can be put into a blinking state. """
+
     def __init__(self, light: ToggleLight, scheduler: Scheduler,
                  blink_interval_ms=1000):
         self._light = light
         self._blink_animation = BlinkingAnimation(
             light, scheduler, blink_interval_ms)
+
+    def __bool__(self):
+        return bool(self._light)
 
     def toggle(self, bool_value=None):
         if self._blink_animation.is_animation_running():
@@ -51,12 +61,13 @@ class BlinkableLight(Blinkable, ToggleLight):
         return self._blink_animation.is_animation_running()
 
 
-class Metronome:
+class Metronome(Beatable):
     """ Makes a list of lights into a metronome.
 
     A metronome toggles each light in the provided sequence one at a time. When
     the last light is reached, it starts over.
     """
+
     def __init__(self, scheduler: Scheduler, lights: list[ToggleLight]):
         pattern = [[l] for l in lights]
         if len(pattern) == 1:
@@ -69,3 +80,6 @@ class Metronome:
         """ Step a beat in the metronome. """
         self._animation.step_animation()
 
+    def reset(self):
+        """ Resets the metronome so that it starts from the first beat. """
+        self._animation.reset_animation()
