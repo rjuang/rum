@@ -2,7 +2,8 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_display import DirectDisplay, DisplayWindow, ScrollingDisplay
+from rum_display import DirectDisplay, DisplayWindow, ScrollingDisplay, \
+    PagedDisplay
 from rum_threading import Scheduler
 from tests.testutils import FakeClock
 
@@ -405,6 +406,216 @@ class ScrollingDisplayTest(unittest.TestCase):
         self.assertEqual(list('*****ello!******'), self._display[2])
         self.assertEqual(list('*****d!  w******'), self._display[3])
         self.assertEqual(list('****************'), self._display[4])
+
+
+class PagedDisplayTests(unittest.TestCase):
+    def setUp(self):
+        self._clock = FakeClock()
+        self._pushed = None
+
+        def push_fn(lines):
+            self._pushed = [line[:] for line in lines]
+
+        self._scheduler = Scheduler(time_fn=self._clock.time)
+        self._display = (DirectDisplay.Builder()
+                         .set_lines(2)
+                         .set_line_width(16)
+                         .push_with(push_fn)
+                         .build())
+        self._paged_display = PagedDisplay(self._display, self._scheduler)
+        self._display[0] = 'Hello'
+        self._display[1] = 'World'
+
+    def test_pagedDisplay_matchesUnderlyingDimensions(self):
+        self.assertEqual(2, len(self._paged_display))
+        self.assertEqual(16, self._paged_display.width())
+
+    def test_setInactivePage_doesNotImpactCurrentDisplay(self):
+        self._paged_display.page('page1')[0] = 'goodbye'
+        self._paged_display.page('page1')[1] = 'unittest'
+        self.assertEqual(list('Hello           '), self._display[0])
+        self.assertEqual(list('World           '), self._display[1])
+        self.assertEqual(['goodbye', 'unittest'],
+                         self._paged_display.page('page1'))
+        self.assertEqual(None, self._pushed)
+
+    def test_setActivePage_alsoUpdatesDisplay(self):
+        self._paged_display.page('main')[0] = 'main'
+        self._paged_display.page('main')[1] = 'page'
+        self._paged_display.set_active_page('main')
+        self.assertEqual(list('main            '), self._display[0])
+        self.assertEqual(list('page            '), self._display[1])
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+    def test_directlyChangeActivePage_alsoUpdatesActiveKey(self):
+        self._paged_display.page('main')[0] = 'main'
+        self._paged_display.page('main')[1] = 'page'
+        self._paged_display.set_active_page('main')
+        self._paged_display[0] = 'changed'
+        self._paged_display[1] = 'text'
+        self.assertEqual(list('changed         '), self._display[0])
+        self.assertEqual(list('text            '), self._display[1])
+        self.assertEqual(['changed', 'text'], self._paged_display.page('main'))
+
+        # Changes don't get pushed until explicitly pushed or active page set.
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+    def test_temporaryPage_properlyShowsAndRevertsToActivePageContent(self):
+        self._paged_display.page('main')[0] = 'main'
+        self._paged_display.page('main')[1] = 'page'
+        self._paged_display.set_active_page('main')
+
+        self._paged_display.page('tmp')[0] = 'temporary'
+        self._paged_display.page('tmp')[1] = 'toast'
+        self._paged_display.set_active_page('tmp', expiration_ms=500)
+
+        self.assertEqual(list('temporary       '), self._display[0])
+        self.assertEqual(list('toast           '), self._display[1])
+        self.assertEqual(['temporary', 'toast'],
+                         self._paged_display.page('tmp'))
+        self.assertEqual('temporary', self._paged_display[0])
+        self.assertEqual('toast', self._paged_display[1])
+
+        self.assertEqual([list('temporary       '),
+                          list('toast           ')],
+                         self._pushed)
+
+        # No changes if the expiration time doesn't hit
+        self._clock.advance(0.499)
+        self._scheduler.idle()
+
+        self.assertEqual('temporary', self._paged_display[0])
+        self.assertEqual('toast', self._paged_display[1])
+        self.assertEqual([list('temporary       '),
+                          list('toast           ')],
+                         self._pushed)
+
+        # When expires, content reverts to main page
+        self._clock.advance(0.001)
+        self._scheduler.idle()
+
+        self.assertEqual('main', self._paged_display[0])
+        self.assertEqual('page', self._paged_display[1])
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+    def test_temporaryPage_properlyShowsAndRevertsToActivePageContent(self):
+        self._paged_display.page('main')[0] = 'main'
+        self._paged_display.page('main')[1] = 'page'
+        self._paged_display.set_active_page('main')
+
+        self._paged_display.page('tmp')[0] = 'temporary'
+        self._paged_display.page('tmp')[1] = 'toast'
+        self._paged_display.set_active_page('tmp', expiration_ms=500)
+
+        self.assertEqual(list('temporary       '), self._display[0])
+        self.assertEqual(list('toast           '), self._display[1])
+        self.assertEqual(['temporary', 'toast'],
+                         self._paged_display.page('tmp'))
+        self.assertEqual('temporary', self._paged_display[0])
+        self.assertEqual('toast', self._paged_display[1])
+
+        self.assertEqual([list('temporary       '),
+                          list('toast           ')],
+                         self._pushed)
+
+        # No changes if the expiration time doesn't hit
+        self._clock.advance(0.499)
+        self._scheduler.idle()
+
+        self.assertEqual('temporary', self._paged_display[0])
+        self.assertEqual('toast', self._paged_display[1])
+        self.assertEqual([list('temporary       '),
+                          list('toast           ')],
+                         self._pushed)
+
+        # When expires, content reverts to main page
+        self._clock.advance(0.001)
+        self._scheduler.idle()
+
+        self.assertEqual('main', self._paged_display[0])
+        self.assertEqual('page', self._paged_display[1])
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+    def test_temporaryPageWhileTemporaryPageActive_cancelsFirstProperly(self):
+        self._paged_display.page('main')[0] = 'main'
+        self._paged_display.page('main')[1] = 'page'
+        self._paged_display.set_active_page('main')
+
+        self._paged_display.page('tmp')[0] = 'temporary'
+        self._paged_display.page('tmp')[1] = 'toast'
+        self._paged_display.set_active_page('tmp', expiration_ms=500)
+
+        self._paged_display.page('tmp2')[0] = 'another'
+        self._paged_display.page('tmp2')[1] = 'msg'
+        self._paged_display.set_active_page('tmp2', expiration_ms=100)
+
+        self.assertEqual(list('another         '), self._display[0])
+        self.assertEqual(list('msg             '), self._display[1])
+        self.assertEqual('another', self._paged_display[0])
+        self.assertEqual('msg', self._paged_display[1])
+
+        self.assertEqual([list('another         '),
+                          list('msg             ')],
+                         self._pushed)
+
+        # No changes if the expiration time doesn't hit
+        self._clock.advance(0.100)
+        self._scheduler.idle()
+
+        self.assertEqual('main', self._paged_display[0])
+        self.assertEqual('page', self._paged_display[1])
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+        # When previous toast would have expire, nothing changes
+        self._clock.advance(0.500)
+        self._scheduler.idle()
+
+        self.assertEqual('main', self._paged_display[0])
+        self.assertEqual('page', self._paged_display[1])
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+    def test_temporaryPageResetWhileActive_cancelsAndResetsProperly(self):
+        self._paged_display.page('main')[0] = 'main'
+        self._paged_display.page('main')[1] = 'page'
+        self._paged_display.set_active_page('main')
+
+        self._paged_display.page('tmp')[0] = 'temporary'
+        self._paged_display.page('tmp')[1] = 'toast'
+        self._paged_display.set_active_page('tmp', expiration_ms=500)
+        self._paged_display.reset()
+
+        self.assertEqual('main', self._paged_display[0])
+        self.assertEqual('page', self._paged_display[1])
+        self.assertEqual([list('main            '),
+                          list('page            ')],
+                         self._pushed)
+
+        # Update active tab before the toast would have expired
+        self._paged_display.page('new')[0] = 'hello'
+        self._paged_display.page('new')[1] = 'world'
+        self._paged_display.set_active_page('new')
+
+        # When previous toast would have expire, nothing changes
+        self._clock.advance(0.500)
+        self._scheduler.idle()
+
+        self.assertEqual('hello', self._paged_display[0])
+        self.assertEqual('world', self._paged_display[1])
+        self.assertEqual([list('hello           '),
+                          list('world           ')],
+                         self._pushed)
 
 
 if __name__ == '__main__':

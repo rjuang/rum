@@ -21,6 +21,11 @@ class Display:
         """ Push the contents in this instance to the actual hardware. """
         raise NotImplementedError()
 
+    def __len__(self): raise NotImplementedError()
+    def __setitem__(self, key, value): raise NotImplementedError()
+    def __getitem__(self, item): raise NotImplementedError()
+    def __repr__(self): raise NotImplementedError()
+
 
 class DirectDisplay(Display):
     """ Basic simple display that maintains a set of chars to display.
@@ -250,6 +255,116 @@ class ScrollingDisplay(Display):
         self._scrolling.add(idx)
         self._scheduler.schedule(lambda: self._update_display(idx),
                                  delay_ms=self._scroll_interval_ms)
+
+    def width(self):
+        return self._display.width()
+
+    def height(self):
+        return self._display.height()
+
+    def push(self):
+        return self._display.push()
+
+
+class PagedDisplay(Display):
+    def __init__(self, display: Display, scheduler: Scheduler):
+        self._display = display
+        self._scheduler = scheduler
+        self._active_page = ''
+        self._page_map = {}
+        self._temporary_page = None
+        self._reset_task = None
+
+    def __len__(self):
+        return len(self._display)
+
+    def __setitem__(self, key, value):
+        """ Sets the lines for the active page. """
+        self.page(self._get_page_key_displayed())[key] = value
+        self._display[key] = value
+
+    def __getitem__(self, key):
+        """ Sets the lines for the active page. """
+        return self.page(self._get_page_key_displayed())[key]
+
+    def __repr__(self):
+        return repr(self._display)
+
+    def _get_page_key_displayed(self):
+        return (self._active_page if self._temporary_page is None
+                else self._temporary_page[0])
+
+    def set_active_page(self, key, expiration_ms=0, push=True):
+        """ Sets the active page that should be displayed.
+
+        Pages can be made temporary by setting a positive expiration value.
+        When a temporary page is set, it will expire after the expiration time
+        and the previous non-expiring page will be displayed afterwards. If
+        another expiring page is set before the expiration, the new temporary
+        page is displayed and will expire after the specified duration. Once
+        expired, the page displayed will always revert to the last
+        non-expiring page.
+
+        :param key:  the name of the page to make active.
+        :param expiration_ms: the duration for which the page should stay active
+        before expiring (default: 0).
+        :param push:  set to True to commit the updates to hardware
+           (default: True)
+        """
+        if expiration_ms == 0:
+            self._active_page = key
+        else:
+            self._temporary_page = (key, expiration_ms)
+            if self._reset_task is not None:
+                self._scheduler.cancel(self._reset_task)
+            self._reset_task = self._scheduler.schedule(
+                self._on_page_expired, delay_ms=expiration_ms)
+
+        for i in range(len(self._display)):
+            self._display[i] = self._page_map[key][i]
+
+        if push:
+            self.push()
+
+    def _on_page_expired(self):
+        self.reset(push=True)
+
+    def reset(self, push=True):
+        """ Expire any temporary data and update the text to active page.
+
+        :param push: whether to push the text to hardware (defeault: True)
+        """
+        if self._reset_task is not None:
+            # Make sure to cancel the reset task so that it doesn't happen
+            # later.
+            self._scheduler.cancel(self._reset_task)
+            self._reset_task = None
+
+        self._temporary_page = None
+        for i in range(len(self._display)):
+            self._display[i] = self._page_map[self._active_page][i]
+
+        # Also force the underlying display to update
+        if push:
+            self.push()
+
+    def page(self, key):
+        """ Returns an array corresponding to the specified page lines.
+
+        The returned array can be set to update the page contents. If the page
+        does not exist, one will be created before the contents of the page is
+        returned.
+
+        :param key: name of the page to fetch
+        """
+        if key not in self._page_map:
+            self._page_map[key] = [[' ' * self.width()]
+                                   for _ in range(self.height())]
+        return self._page_map[key]
+
+    def page_keys(self):
+        """ Returns all page names. """
+        return self._page_map.keys()
 
     def width(self):
         return self._display.width()

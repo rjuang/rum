@@ -85,7 +85,7 @@ class SequentialAnimation(Animation):
     ToggleLights that should be the only lights that are on for that frame.
     """
 
-    def __init__(self, light_frames: list[list[ToggleLight]],
+    def __init__(self, light_frames: 'list[list[ToggleLight]]',
                  scheduler: Scheduler,
                  update_interval_ms=1000,
                  loop=True):

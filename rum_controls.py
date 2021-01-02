@@ -68,7 +68,7 @@ class Metronome(Beatable):
     the last light is reached, it starts over.
     """
 
-    def __init__(self, scheduler: Scheduler, lights: list[ToggleLight]):
+    def __init__(self, scheduler: Scheduler, lights: 'list[ToggleLight]'):
         pattern = [[l] for l in lights]
         if len(pattern) == 1:
             # In the event the pattern only has 1 frame (i.e. 1 element in
