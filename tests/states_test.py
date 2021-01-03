@@ -2,7 +2,7 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_state import IterableState
+from rum.states import IterableState
 
 
 class IterableStateTests(unittest.TestCase):

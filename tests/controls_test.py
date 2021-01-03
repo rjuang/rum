@@ -2,9 +2,9 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_controls import BlinkableLight, Metronome
-from rum_lights import OnOffLight
-from rum_threading import Scheduler
+from rum.controls import BlinkableLight, Metronome
+from rum.lights import OnOffLight
+from rum.scheduling import Scheduler
 from tests.testutils import FakeClock
 
 

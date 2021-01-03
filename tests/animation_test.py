@@ -2,9 +2,9 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_animation import BlinkingAnimation, SequentialAnimation
-from rum_lights import OnOffLight
-from rum_threading import Scheduler
+from rum.animations import BlinkingAnimation, SequentialAnimation
+from rum.lights import OnOffLight
+from rum.scheduling import Scheduler
 from tests.testutils import FakeClock
 
 

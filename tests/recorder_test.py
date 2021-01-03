@@ -2,8 +2,8 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_recorder import Recorder
-from rum_threading import Scheduler
+from rum.recorder import Recorder
+from rum.scheduling import Scheduler
 from tests.testutils import FakeClock
 
 

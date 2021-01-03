@@ -1,5 +1,5 @@
-from rum_lights import ToggleLight
-from rum_threading import Scheduler
+from rum.lights import ToggleLight
+from rum.scheduling import Scheduler
 
 
 class Animation:

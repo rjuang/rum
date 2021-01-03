@@ -1,4 +1,4 @@
-from rum_threading import Scheduler
+from rum.scheduling import Scheduler
 
 
 class Recorder:

@@ -4,9 +4,9 @@ The purpose of this class is to simplify the construction of common control
 components (e.g. blinkable lights) by combining various classes into a single
 class.
 """
-from rum_animation import BlinkingAnimation, SequentialAnimation
-from rum_lights import ToggleLight
-from rum_threading import Scheduler
+from rum.animations import BlinkingAnimation, SequentialAnimation
+from rum.lights import ToggleLight
+from rum.scheduling import Scheduler
 
 
 class Blinkable:

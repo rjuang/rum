@@ -3,8 +3,7 @@
 This file will contain all things related to some form of a button, i.e. things
 that can be pressed and released.
 """
-import rum_state
-import rum_threading
+from rum import scheduling, states
 
 
 class Button:
@@ -58,7 +57,7 @@ class SimpleButton(Button):
     appropriate listeners.
     """
 
-    def __init__(self, scheduler: rum_threading.Scheduler,
+    def __init__(self, scheduler: scheduling.Scheduler,
                  long_press_delay_ms=450):
         """ Construct a SimpleButton
 
@@ -121,9 +120,9 @@ class ToggleStateButton(Button):
     or another state variable).
     """
     def __init__(self,
-                 state: rum_state.IterableState,
-                 scheduler: rum_threading.Scheduler,
-                 long_press_state: rum_state.IterableState = None,
+                 state: states.IterableState,
+                 scheduler: scheduling.Scheduler,
+                 long_press_state: states.IterableState = None,
                  reverse_direction=False):
         self._button = SimpleButton(scheduler)
         self._state = state

@@ -2,7 +2,7 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_lights import OnOffLight, ColorLight, ColorToggleLight
+from rum.lights import OnOffLight, ColorLight, ColorToggleLight
 
 
 class OnOffLightTests(unittest.TestCase):

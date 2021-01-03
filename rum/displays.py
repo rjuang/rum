@@ -1,5 +1,5 @@
 """ Classes for managing display state in a midi controller. """
-from rum_threading import Scheduler
+from rum.scheduling import Scheduler
 
 
 class Display:

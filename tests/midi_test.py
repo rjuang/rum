@@ -2,7 +2,7 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum_midi import MidiMessage, Matchers
+from rum.midi import MidiMessage, Matchers
 
 
 class MidiMessageTests(unittest.TestCase):
