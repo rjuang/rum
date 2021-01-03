@@ -22,6 +22,9 @@ components.
 
 import channels
 
+from rum.midi import MidiMessage
+
+
 class ChannelRack:
     """ Methods in FL Studio for controlling the channel rack. """
     @staticmethod
@@ -44,3 +47,9 @@ class ChannelRack:
     @staticmethod
     def play_midi_note(channel, note, velocity):
         channels.midiNoteOn(channel, note, velocity)
+
+
+class Midi:
+    @staticmethod
+    def to_midi_message(event: 'eventData'):
+        return MidiMessage(event.status, event.data1, event.data2)

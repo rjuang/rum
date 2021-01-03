@@ -1,5 +1,6 @@
 # name=RUM Library Debugger Tool
 """ Debugger utility to dump out midi event messages in FL Studio. """
+from daw import flstudio
 from rum.midi import MidiMessage
 
 import playlist
@@ -59,5 +60,5 @@ def OnInit():
 
 
 def OnMidiMsg(event):
-    msg = MidiMessage(event.status, event.data1, event.data2)
+    msg = flstudio.Midi.to_midi_message(event)
     print(msg)
