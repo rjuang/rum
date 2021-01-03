@@ -78,6 +78,7 @@ class SimpleButton(Button):
         ignore the event.
         """
         self._on_short_press = listener
+        return self
 
     def set_long_press_listener(self, listener):
         """ Specify a listener to run when button is long-pressed.
@@ -86,6 +87,7 @@ class SimpleButton(Button):
         ignore the event.
         """
         self._on_long_press = listener
+        return
 
     def long_press(self):
         """ Manually trigger a long-press event. """
@@ -140,9 +142,11 @@ class ToggleStateButton(Button):
 
     def set_press_listener(self, listener):
         self._press_listener = listener
+        return self
 
     def set_long_press_listener(self, listener):
         self._long_press_listener = listener
+        return self
 
     def long_press(self):
         if self._long_press_state is not None:
