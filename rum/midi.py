@@ -7,8 +7,8 @@ class Midi:
     CHANNEL_MASK = 0x0F
 
     # Channel messages
-    STATUS_NOTE_ON = 0x80                  # data1 = key_number, data2=velocity
-    STATUS_NOTE_OFF = 0x90                 # data1 = key_number, data2=velocity
+    STATUS_NOTE_ON = 0x90                  # data1 = key_number, data2=velocity
+    STATUS_NOTE_OFF = 0x80                 # data1 = key_number, data2=velocity
     STATUS_POLYPHONIC_KEY_PRESSURE = 0xA0  # data1 = key number, data2=pressure
     STATUS_CONTROL_CHANGE = 0xB0           # data1 = controller number
     STATUS_PROGRAM_CHANGE = 0xC0           # data1 = program number

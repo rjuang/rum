@@ -21,6 +21,7 @@ components.
 """
 
 import channels
+import device
 
 from rum.midi import MidiMessage
 
@@ -52,4 +53,24 @@ class ChannelRack:
 class Midi:
     @staticmethod
     def to_midi_message(event: 'eventData'):
+        """ Convert an FL Studio eventData midi message to MidiMessage. """
         return MidiMessage(event.status, event.data1, event.data2)
+
+
+class Device:
+    @staticmethod
+    def send_sysex_message(byte_str):
+        """ Send a midi SYSEX message to the linked output device. """
+        return device.midiOutSysex(byte_str)
+
+    @staticmethod
+    def get_port_number():
+        """ Fetches the MIDI port number assigned to this device. """
+        return device.getPortNumber()
+
+    @staticmethod
+    def dispatch_message_to_other_scripts(status, data1, data2):
+        """ Dispatches the midi note to all other scripts. """
+        for i in range(device.dispatchReceiverCount()):
+            msg = status + (data1 << 8) + (data2 << 16)
+            device.dispatch(i, msg)

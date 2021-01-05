@@ -57,7 +57,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -88,7 +88,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=0)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -119,7 +119,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -153,10 +153,10 @@ class RecorderTests(unittest.TestCase):
         self._recorder.stop_recording()
 
         result = self._recorder.play('even')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         result = self._recorder.play('odd')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -205,10 +205,10 @@ class RecorderTests(unittest.TestCase):
         self._recorder.stop_recording()
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         result = self._recorder.play('odd')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -254,7 +254,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -290,10 +290,10 @@ class RecorderTests(unittest.TestCase):
         self._recorder.stop_recording()
 
         result = self._recorder.play('even')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         result = self._recorder.play('odd')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -345,10 +345,10 @@ class RecorderTests(unittest.TestCase):
         self._recorder.stop_recording()
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         result = self._recorder.play('odd')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -407,10 +407,10 @@ class RecorderTests(unittest.TestCase):
         self._recorder.stop_recording()
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         result = self._recorder.play('odd')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -457,7 +457,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even', loop=True)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -490,7 +490,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even')
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -523,7 +523,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even', loop=True)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -556,7 +556,7 @@ class RecorderTests(unittest.TestCase):
         self._feed_odd_pattern(6000)
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []
@@ -592,10 +592,10 @@ class RecorderTests(unittest.TestCase):
         self._recorder.stop_recording()
 
         result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         result = self._recorder.play('odd', loop=True, loop_delay_ms=1000)
-        self.assertTrue(True, result)
+        self.assertEqual(True, result)
 
         # Make sure notes are played back correctly in time.
         history = []

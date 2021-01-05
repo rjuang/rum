@@ -73,6 +73,7 @@ class Recorder:
             # twice, but allow overlap if playing once.
             return True
         self._play_pattern(pattern_id, pattern, loop, loop_delay_ms)
+        return True
 
     def _play_pattern(self, pattern_id, pattern, loop, loop_delay_ms):
         if pattern_id not in self._play_task_map:

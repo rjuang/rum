@@ -1,4 +1,6 @@
 """ Classes and functions for constructing matcher functions. """
+from rum.midi import Midi
+
 
 class When:
     """ Factory for converting a matcher function into a process function.
@@ -43,21 +45,44 @@ class WhenAny(When):
 
 
 # Convenience syntax. Allow lower-case function method call.
-when = When
+# Have when(...)  with multiple args default to WhenAll.
+
+when = WhenAll
 when_all = WhenAll
 when_any = WhenAny
 
 
 def midi_eq(status, data1, data2):
+    """ Returns a function that matches to messages with the provided args. """
     return lambda m: (m.status == status and
                       m.data1 == data1 and
                       m.data2 == data2)
+
+
+def note_on():
+    """ Returns a function that matches to messages with note on. """
+    return lambda msg: msg.get_masked_status() == Midi.STATUS_NOTE_ON
+
+
+def note_off():
+    """ Returns a function that matches to messages with note off. """
+    return lambda msg: msg.get_masked_status() == Midi.STATUS_NOTE_OFF
+
+
+def channel_eq(channel):
+    """ Returns a function that matches to messages from the midi channel. """
+    return lambda msg: msg.get_channel() == channel
 
 
 # Equality matchers
 def status_eq(status):
     """ Returns a function that matches to the specified status codes. """
     return lambda m: m.status == status
+
+
+def masked_status_eq(masked_status):
+    """ Returns a function that matches to the masked status. """
+    return lambda m: m.get_masked_status() == masked_status
 
 
 def data1_eq(data1):
@@ -118,6 +143,16 @@ def data2_in(values):
     input message.
     """
     return lambda m: m.data2 in values
+
+
+# For buttons:
+# Matches when a control change message or command message represents a toggle
+# button and has value of ON.
+IS_ON = data2_eq(0x7F)
+# Matches when a control change message or command message represents a toggle
+# button and has value of OFF.
+IS_OFF = data2_eq(0x00)
+
 
 # Modifiers
 

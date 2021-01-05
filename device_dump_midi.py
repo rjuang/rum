@@ -1,7 +1,6 @@
 # name=RUM Library Debugger Tool
 """ Debugger utility to dump out midi event messages in FL Studio. """
 from daw import flstudio
-from rum.midi import MidiMessage
 
 import playlist
 import channels
