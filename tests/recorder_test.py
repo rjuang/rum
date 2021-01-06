@@ -36,6 +36,32 @@ class RecorderTests(unittest.TestCase):
         self._feed_pattern(start_timestamp, data)
         return len(data)
 
+    def test_isRecordingWhileAfterInit_returnsFalse(self):
+        self.assertEqual(False, self._recorder.is_recording())
+
+    def test_getRecordingPatternIdAfterInit_returnsNone(self):
+        self.assertEqual(None, self._recorder.get_recording_pattern_id())
+
+    def test_isRecordingWhileAfterStopped_returnsFalse(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self.assertEqual(False, self._recorder.is_recording())
+
+    def test_getRecordingPatternIdAfterStopped_returnsNone(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self.assertEqual(None, self._recorder.get_recording_pattern_id())
+
+    def test_isRecordingAfterStart_returnsTrue(self):
+        self._recorder.start_recording('even')
+        self.assertEqual(True, self._recorder.is_recording())
+
+    def test_getRecordingPatternAfterStart_returnsId(self):
+        self._recorder.start_recording('even')
+        self.assertEqual('even', self._recorder.get_recording_pattern_id())
+
     def test_playWithNoRecording_playbackReturnsFalse(self):
         self._feed_even_pattern(1000)
         self.assertFalse(self._recorder.play('non-existent-id'))

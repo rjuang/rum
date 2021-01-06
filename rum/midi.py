@@ -2,6 +2,7 @@ import time
 # For a good overview of how MIDI messages are structured, refer to this link:
 # http://users.cs.cf.ac.uk/Dave.Marshall/Multimedia/node158.html
 
+
 class Midi:
     """ Contains all MIDI related constants"""
     CHANNEL_MASK = 0x0F
@@ -63,41 +64,3 @@ class MidiMessage:
 def mark_handled(msg: MidiMessage):
     """ Convenience function for marking a midi message as handled. """
     msg.mark_handled()
-
-
-class MidiProcessor:
-    """ Processor whose sole function is to dispatch midi messages.
-
-    MidiProcessor is a convenience structure that receives a single midi message
-    and dispatches it to multiple end points. These dispatch functions can
-    have built-in conditions that drop or transmit the message to its end point.
-    """
-    def __init__(self):
-        self._processors = []
-
-    def add(self, *var_processor_fns):
-        """ Add processor function to trigger when a midi message is processed.
-
-        This method accepts a variable number of arguments. The functions are
-        triggered in the order they are added and provided. Each function
-        will be passed a single argument of type MidiMessage. This message is
-        mutable and changes to it will be propagated to the later processing
-        functions. The MidiMessage can be marked handled by modifying the
-        handled field. This prevents further processing by FL Studio (e.g.
-        sound generation).
-
-        :param var_processor_fns: a variable list of processor functions to
-        call when a midi message is input. A processor function takes a single
-        input argument of type MidiMessage. The functions are called in the
-        order they are provided and added.
-        :return: this instance for further operation chaining
-        """
-        for fn in var_processor_fns:
-            self._processors.append(fn)
-        return self
-
-    def process(self, message: MidiMessage):
-        """ Process midi message by sending it to all processor functions. """
-        for p in self._processors:
-            p(message)
-        return self

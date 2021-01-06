@@ -2,8 +2,9 @@ import sys
 import unittest
 
 sys.path.insert(0, '..')
-from rum.midi import MidiMessage, MidiProcessor
-from rum.matchers import when, data1_eq, status_eq
+from rum.midi import MidiMessage
+from rum.processor import MidiProcessor, when
+from rum.matchers import data1_eq, status_eq
 
 
 class MidiMessageTests(unittest.TestCase):

@@ -23,7 +23,8 @@ components.
 import channels
 import device
 
-from rum.midi import MidiMessage
+import rum.processor
+from rum import scheduling, midi
 
 
 class ChannelRack:
@@ -54,7 +55,7 @@ class Midi:
     @staticmethod
     def to_midi_message(event: 'eventData'):
         """ Convert an FL Studio eventData midi message to MidiMessage. """
-        return MidiMessage(event.status, event.data1, event.data2)
+        return midi.MidiMessage(event.status, event.data1, event.data2)
 
 
 class Device:
@@ -74,3 +75,35 @@ class Device:
         for i in range(device.dispatchReceiverCount()):
             msg = status + (data1 << 8) + (data2 << 16)
             device.dispatch(i, msg)
+
+
+def register(function):
+    """ Registers an FL Studio function with the RUM framework.
+
+    Example usage:
+
+    @register
+    def OnMidiMsg( ... ):
+        pass
+
+    This will cause the corresponding method to be registered with the
+    framework.
+    """
+    def idle_function(*args, **kwargs):
+        scheduling.get_scheduler().idle()
+        return function(*args, **kwargs)
+
+    def midi_msg_function(event_data):
+        msg = Midi.to_midi_message(event_data)
+        rum.processor.get_processor().process(msg)
+        if msg.handled:
+            event_data.handled = True
+        return function(event_data)
+
+    if function.__name__ == 'OnIdle':
+        return idle_function
+    elif function.__name__ == 'OnMidiMsg':
+        return midi_msg_function
+
+    # Default to the undecorated function if we don't care
+    return function

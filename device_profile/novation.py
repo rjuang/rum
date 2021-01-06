@@ -1,5 +1,5 @@
 from device_profile.command import MidiCommandBuilder
-from rum.matchers import when, require_all, masked_status_eq, data1_eq, note_on, \
+from rum.matchers import require_all, masked_status_eq, data1_eq, note_on, \
     channel_eq, note_off
 
 

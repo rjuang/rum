@@ -66,3 +66,10 @@ class Scheduler:
                 return
             task = entry[-1]
             task()
+
+_active_scheduler = Scheduler()
+
+
+def get_scheduler():
+    """ Returns the singleton scheduler. """
+    return _active_scheduler

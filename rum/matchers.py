@@ -2,56 +2,6 @@
 from rum.midi import Midi
 
 
-class When:
-    """ Factory for converting a matcher function into a process function.
-
-    A matcher function takes an input MidiMessage and returns a boolean
-    specifying whether some conditional function on the input matches.
-
-    A process function takes an input MidiMessage, and executes something
-    based on the midi message.
-
-    This class combines a matcher and processor so that it becomes an if-then
-    processor function. To be fluent, use the
-
-    e.g.
-       process_fn = When(status_eq(128)).then(trigger_fn)
-       ...
-       process_fn(msg)   # Calls trigger_fn(msg) if msg.status == 128
-    """
-    def __init__(self, matcher_fn):
-        self._matcher_fn = matcher_fn
-
-    def then(self, *var_trigger_fn):
-        """ Action to execute """
-        def process_fn(msg):
-            if self._matcher_fn(msg):
-                for trigger_fn in var_trigger_fn:
-                    trigger_fn(msg)
-
-        return process_fn
-
-
-class WhenAll(When):
-    """ Similar to When but requires all input matchers to be True. """
-    def __init__(self, *var_matcher_fns):
-        super().__init__(require_all(*var_matcher_fns))
-
-
-class WhenAny(When):
-    """ Similar to When but requires any input matchers to be True. """
-    def __init__(self, *var_matcher_fns):
-        super().__init__(require_any(*var_matcher_fns))
-
-
-# Convenience syntax. Allow lower-case function method call.
-# Have when(...)  with multiple args default to WhenAll.
-
-when = WhenAll
-when_all = WhenAll
-when_any = WhenAny
-
-
 def midi_eq(status, data1, data2):
     """ Returns a function that matches to messages with the provided args. """
     return lambda m: (m.status == status and
@@ -155,8 +105,6 @@ IS_OFF = data2_eq(0x00)
 
 
 # Modifiers
-
-
 def _all(msg, *fn_args):
     for fn in fn_args:
         if not fn(msg):

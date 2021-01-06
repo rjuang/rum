@@ -1,4 +1,4 @@
-from rum.scheduling import Scheduler
+from rum import scheduling
 
 
 class Recorder:
@@ -10,7 +10,7 @@ class Recorder:
     type is generic and the playback function is provided via the constructor.
     As such, the recorder can be re-purposed
     """
-    def __init__(self, scheduler: Scheduler, playback_fn=None):
+    def __init__(self, scheduler: scheduling.Scheduler, playback_fn=None):
         self._scheduler = scheduler
 
         # List of tuples containing (time, channel note, velocity)
@@ -51,6 +51,10 @@ class Recorder:
     def is_recording(self):
         """ Return true if currently recording a pattern. """
         return self._recording_pattern_id is not None
+
+    def get_recording_pattern_id(self):
+        """ Returns the pattern id that is currently being recorded. """
+        return self._recording_pattern_id
 
     def play(self, pattern_id, loop=False, loop_delay_ms=0):
         """ Schedule a pattern for playback when pressed.
