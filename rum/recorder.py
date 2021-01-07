@@ -22,6 +22,8 @@ class Recorder:
         self._play_task_map = {}
         # Maps a pattern id to the next scheduled loop task.
         self._loop_task_map = {}
+        # Stores the loop delays for the patterns
+        self._loop_delays = {}
 
     def on_data_event(self, timestamp_ms, data):
         """ Called when new data to potentially record is produced.
@@ -56,6 +58,10 @@ class Recorder:
         """ Returns the pattern id that is currently being recorded. """
         return self._recording_pattern_id
 
+    def set_loop_delay(self, pattern_id, loop_delay_ms):
+        """ Updates the loop delay for the pattern to the specified value. """
+        self._loop_delays[pattern_id] = loop_delay_ms
+
     def play(self, pattern_id, loop=False, loop_delay_ms=0):
         """ Schedule a pattern for playback when pressed.
 
@@ -76,10 +82,12 @@ class Recorder:
             # Already playing loop. Don't play the same pattern in loops
             # twice, but allow overlap if playing once.
             return True
-        self._play_pattern(pattern_id, pattern, loop, loop_delay_ms)
+
+        self._loop_delays[pattern_id] = loop_delay_ms
+        self._play_pattern(pattern_id, pattern, loop)
         return True
 
-    def _play_pattern(self, pattern_id, pattern, loop, loop_delay_ms):
+    def _play_pattern(self, pattern_id, pattern, loop):
         if pattern_id not in self._play_task_map:
             self._play_task_map[pattern_id] = set()
         base_ms = pattern[0][0]
@@ -88,9 +96,9 @@ class Recorder:
             self._play_data(pattern_id, delay_ms, data)
         if loop and delay_ms > 0:
             # Don't schedule something that will keep playing now
+            loop_delay_ms = self._loop_delays[pattern_id]
             self._schedule_loop(pattern_id,
                                 delay_ms + loop_delay_ms,
-                                loop_delay_ms,
                                 pattern)
 
     def _play_data(self, pattern_id, delay_ms, data):
@@ -109,10 +117,9 @@ class Recorder:
             self._play_task_map[pattern_id].discard(task)
         self._scheduler.schedule(_clean_task, delay_ms=delay_ms)
 
-    def _schedule_loop(self, pattern_id, delay_ms, loop_delay_ms, pattern):
+    def _schedule_loop(self, pattern_id, delay_ms, pattern):
         task = self._scheduler.schedule(
-            lambda: self._play_pattern(pattern_id, pattern, True,
-                                       loop_delay_ms),
+            lambda: self._play_pattern(pattern_id, pattern, True),
             delay_ms=delay_ms)
         if pattern_id in self._loop_task_map:
             # Cancel any pre-existing loop (just in case) before overwriting.

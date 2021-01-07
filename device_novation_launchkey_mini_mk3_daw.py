@@ -4,18 +4,18 @@
 from daw import flstudio
 from daw.flstudio import register
 from device_profile.novation import LaunchkeyMk3
-from rum.matchers import status_eq
+from rum.matchers import midi_has
 from rum.midi import MidiMessage
 from rum.processor import trigger_when
 
 
-@trigger_when(status_eq(LaunchkeyMk3.SOLID_LED_STATUS_CMD))
+@trigger_when(midi_has(status=LaunchkeyMk3.SOLID_LED_STATUS_CMD))
 def set_led_color(m: MidiMessage):
     msg = LaunchkeyMk3.new_command().light_color(m.data1, m.data2).build()
     flstudio.Device.send_sysex_message(msg)
 
 
-@trigger_when(status_eq(LaunchkeyMk3.BLINK_LED_STATUS_CMD))
+@trigger_when(midi_has(status=LaunchkeyMk3.BLINK_LED_STATUS_CMD))
 def set_blinking_led(m: MidiMessage):
     msg = LaunchkeyMk3.new_command().blinking_light(m.data1, m.data2).build()
     flstudio.Device.send_sysex_message(msg)

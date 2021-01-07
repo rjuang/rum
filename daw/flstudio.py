@@ -23,6 +23,7 @@ components.
 import channels
 import device
 import midi
+import mixer
 import transport
 
 import rum.processor
@@ -60,6 +61,17 @@ class Midi:
         return rum.midi.MidiMessage(event.status, event.data1, event.data2)
 
 
+class MixerPanel:
+    @staticmethod
+    def set_track_volume(track_idx, volume):
+        """ Sets the volume of the mixer track. """
+        mixer.setTrackVolume(track_idx, volume)
+
+    def get_current_tempo(self):
+        """ Returns the current tempo. """
+        return mixer.getCurrentTempo()
+
+
 class Device:
     @staticmethod
     def send_sysex_message(byte_str):
@@ -87,6 +99,10 @@ class Transport:
     @staticmethod
     def toggle_play():
         transport.globalTransport(midi.FPT_Play, midi.FPT_Play)
+
+    @staticmethod
+    def record():
+        transport.record()
 
 
 def register(function):

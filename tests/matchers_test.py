@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, '..')
 from rum import matchers
-from rum.matchers import midi_eq, status_eq, status_in, status_in_range, \
+from rum.matchers import midi_has, status_eq, status_in, status_in_range, \
     masked_status_eq, channel_eq, note_on, note_off
 from rum.matchers import data1_eq, data1_in, data1_in_range, data2_eq
 from rum.matchers import data2_in, data2_in_range, require_all, require_any
@@ -16,13 +16,13 @@ from rum.midi import MidiMessage
 class MatchersTests(unittest.TestCase):
     def test_matchingMidiEq_matches(self):
         msg = MidiMessage(0x84, 0x1, 0x2)
-        self.assertEqual(True, midi_eq(0x84, 0x1, 0x2)(msg))
+        self.assertEqual(True, midi_has(0x84, 0x1, 0x2)(msg))
 
     def test_mismatchingMidiEq_doesNotMatch(self):
         msg = MidiMessage(0x84, 0x1, 0x2)
-        self.assertEqual(False, midi_eq(0x83, 0x1, 0x2)(msg))
-        self.assertEqual(False, midi_eq(0x84, 0x2, 0x2)(msg))
-        self.assertEqual(False, midi_eq(0x84, 0x1, 0x3)(msg))
+        self.assertEqual(False, midi_has(0x83, 0x1, 0x2)(msg))
+        self.assertEqual(False, midi_has(0x84, 0x2, 0x2)(msg))
+        self.assertEqual(False, midi_has(0x84, 0x1, 0x3)(msg))
 
     def test_statusWithChannelBits_matchesStatus(self):
         msg = MidiMessage(0x84, 0x1, 0x2)
@@ -167,6 +167,6 @@ class MatchersTests(unittest.TestCase):
         self.assertTrue(matchers.IS_OFF(MidiMessage(0xB0, 0x21, 0x0)))
         self.assertFalse(matchers.IS_OFF(MidiMessage(0xB0, 0x21, 0x7F)))
 
-
+    # TODO: Expand midi_has tests to include new keywords
 if __name__ == '__main__':
     unittest.main()

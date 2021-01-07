@@ -62,7 +62,9 @@ class MidiProcessorTests(unittest.TestCase):
          .process(self._msg))
         self.assertEqual(2, self._trigger_count)
 
-    # TODO: Add WhenAll and WhenAny tests.
+
+# TODO: Add tests for get_encoder_values
+
 
 
 if __name__ == '__main__':

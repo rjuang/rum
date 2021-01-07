@@ -1,14 +1,16 @@
 # name=RUM Novation Launchkey Mini Mk3 MIDI
 # url=https://github.com/rjuang/rum
 # receiveFrom=RUM Novation Launchkey Mini Mk3 DAW
+import mixer
+
 from daw import flstudio
+from daw.flstudio import ChannelRack, register, Transport, MixerPanel
 from device_profile.novation import LaunchkeyMk3
-from rum import matchers, scheduling
+from rum import matchers, scheduling, midi
+from rum.matchers import midi_has
 from rum.midi import MidiMessage, Midi
-from rum.matchers import masked_status_eq
 from rum.processor import trigger_when
 from rum.recorder import Recorder
-from daw.flstudio import ChannelRack, register, Transport
 
 DEBUG = True
 
@@ -44,6 +46,8 @@ class Device:
                                  playback_fn=play_note)
         self.play_pad_press = None
         self.stop_pad_press = None
+        self.last_loop = None
+        self.current_loop_delay_ms = 0
 
     def mark_pressed(self, note):
         self.note_down.add(note)
@@ -65,9 +69,11 @@ class Device:
         request_set_led(self.recorder.get_recording_pattern_id()[1], 0)
         self.recorder.stop_recording()
 
-    def play_pad_pattern(self, msg: MidiMessage, loop=False, loop_delay_ms=0):
+    def play_pad_pattern(self, msg: MidiMessage, loop=False):
+        if loop:
+            self.last_loop = (msg.status, msg.data1)
         return self.recorder.play((msg.status, msg.data1), loop=loop,
-                                  loop_delay_ms=loop_delay_ms)
+                                  loop_delay_ms=self.current_loop_delay_ms)
 
 
 _device = Device()
@@ -82,7 +88,7 @@ def on_record_button(msg: MidiMessage):
     else:
         _device.mark_released('record')
         if not _device.is_pad_recording():
-            print('TODO: Transport.record')
+            Transport.record()
     msg.mark_handled()
 
 
@@ -132,12 +138,12 @@ def on_drum_pad(msg: MidiMessage):
         elif (not _device.is_pressed('record') and
               not _device.is_pad_recording()):
             loop = _device.is_pressed('play')
-            if _device.recorder.play((msg.status, msg.data1), loop=loop):
+            if _device.play_pad_pattern(msg, loop=loop):
                 _device.play_pad_press = (msg.status, msg.data1)
                 msg.mark_handled()
 
 
-@trigger_when(masked_status_eq(Midi.STATUS_NOTE_ON))
+@trigger_when(midi_has(status_range=(0x90, 0x9F)))
 def on_note_down(msg: MidiMessage):
     if _device.recorder.get_recording_pattern_id() == (msg.status, msg.data1):
         # Don't send the key press we are recording
@@ -147,6 +153,27 @@ def on_note_down(msg: MidiMessage):
     # from. NOTE: This doesn't work with locked down channels.
     msg.userdata['active_channelrack_index'] = ChannelRack.active_channel()
     _device.recorder.on_data_event(msg.timestamp_ms, msg)
+
+
+@trigger_when(midi_has(status_range=(0xB0, 0xB9),
+                       data1_in=LaunchkeyMk3.ENCODER_IDS))
+def on_encoder_turned(msg: MidiMessage):
+    chan = msg.get_channel()
+    encoder_idx = LaunchkeyMk3.ENCODER_MAP[msg.data1]
+    value = midi.get_encoder_value(msg)
+
+    if encoder_idx == 0:
+        MixerPanel.set_track_volume(encoder_idx, value)
+    elif encoder_idx == 7:
+        bpm = mixer.getCurrentTempo() / 1000
+        quarter_beat_interval_ms = 15000 / bpm
+        # Allow adjustment by quarter of a beat
+        selection = [(i + 1) * quarter_beat_interval_ms for i in range(16)]
+        idx = int(round((len(selection) - 1) * value))
+        if _device.last_loop is not None:
+            _device.recorder.set_loop_delay(_device.last_loop, selection[idx])
+            _device.current_loop_delay_ms = selection[idx]
+
 
 
 @register

@@ -663,5 +663,6 @@ class RecorderTests(unittest.TestCase):
             [1, 11, 3, 13, 5, 15, 7, 17, 9, 19, 1, 11, 3, 13]],
             odd_history)
 
+    # TODO: Add tests for set_loop_delay
 if __name__ == '__main__':
     unittest.main()

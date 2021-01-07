@@ -1,6 +1,6 @@
 from device_profile.command import MidiCommandBuilder
 from rum.matchers import require_all, masked_status_eq, data1_eq, note_on, \
-    channel_eq, note_off, data1_in_range
+    channel_eq, note_off, data1_in_range, midi_has
 
 
 class LaunchkeyMk3(MidiCommandBuilder):
@@ -34,12 +34,16 @@ class LaunchkeyMk3(MidiCommandBuilder):
     DRUM_PAD_MIDI_CHANNEL = 9   # corresponds to channel 10
 
     # Various matchers
-    IS_RECORD_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x75))
-    IS_PLAY_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x73))
-    IS_PAGE_UP_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x68))
-    IS_PAGE_DOWN_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x69))
-    IS_DRUM_PAD = require_all(channel_eq(DRUM_PAD_MIDI_CHANNEL),
-                              data1_in_range(0x24, 0x33))
+    IS_RECORD_BUTTON = midi_has(status_range=(0xB0, 0xBF), data1=0x75)
+    IS_PLAY_BUTTON = midi_has(status_range=(0xB0, 0xBF), data1=0x73)
+    IS_PAGE_UP_BUTTON = midi_has(status_range=(0xB0, 0xBF), data1=0x68)
+    IS_PAGE_DOWN_BUTTON = midi_has(status_range=(0xB0, 0xBF), data1=0x69)
+    IS_DRUM_PAD = midi_has(status_in=[0x89, 0x99], data1_range=(0x24, 0x33))
+
+    # Data1 codes for the encoder.
+    ENCODER_IDS = [0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C]
+    ENCODER_MAP = {eid: idx for idx, eid in enumerate(ENCODER_IDS)}
+
 
     @staticmethod
     def new_command():

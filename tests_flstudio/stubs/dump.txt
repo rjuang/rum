@@ -1,913 +1,1 @@
-# playlist.py
-def getDisplayZone(*args, **kwargs):
-    """ Get display zone number """
-    pass
-def getLiveBlockColor(*args, **kwargs):
-    """ Get live block color """
-    pass
-def getLiveBlockStatus(*args, **kwargs):
-    """ Get live block status """
-    pass
-def getLiveLoopMode(*args, **kwargs):
-    """ Get live loop mode """
-    pass
-def getLivePosSnap(*args, **kwargs):
-    """ Get live pos snap """
-    pass
-def getLiveStatus(*args, **kwargs):
-    """ Get live status """
-    pass
-def getLiveTrigSnap(*args, **kwargs):
-    """ Get live trig snap """
-    pass
-def getLiveTriggerMode(*args, **kwargs):
-    """ Get live trigger mode """
-    pass
-def getSongStartTickPos(*args, **kwargs):
-    """ Get song start tick position """
-    pass
-def getTrackActivityLevel(*args, **kwargs):
-    """ Get track activity level """
-    pass
-def getTrackActivityLevelVis(*args, **kwargs):
-    """ Get track visual activity level """
-    pass
-def getTrackColor(*args, **kwargs):
-    """ Get track color """
-    pass
-def getTrackName(*args, **kwargs):
-    """ Get track name """
-    pass
-def getVisTimeBar(*args, **kwargs):
-    """ Get time bar """
-    pass
-def getVisTimeStep(*args, **kwargs):
-    """ Get time step """
-    pass
-def getVisTimeTick(*args, **kwargs):
-    """ Get time tick """
-    pass
-def incLiveLoopMode(*args, **kwargs):
-    """ Increase live loop mode """
-    pass
-def incLivePosSnap(*args, **kwargs):
-    """ Increase live pos snap """
-    pass
-def incLiveTrigMode(*args, **kwargs):
-    """ Increase live trig mode """
-    pass
-def incLiveTrigSnap(*args, **kwargs):
-    """ Increase live trig snap """
-    pass
-def isTrackMuteLock(*args, **kwargs):
-    """ Get track mute lock state """
-    pass
-def isTrackMuted(*args, **kwargs):
-    """ Get track mute state """
-    pass
-def isTrackSolo(*args, **kwargs):
-    """ Get track solo state """
-    pass
-def liveBlockNumToTime(*args, **kwargs):
-    """ Live block number to time """
-    pass
-def liveDisplayZone(*args, **kwargs):
-    """ Live display zone """
-    pass
-def liveTimeToBlockNum(*args, **kwargs):
-    """ Live time to block number """
-    pass
-def lockDisplayZone(*args, **kwargs):
-    """ Lock display zone """
-    pass
-def muteTrack(*args, **kwargs):
-    """ Toggle track mute state """
-    pass
-def muteTrackLock(*args, **kwargs):
-    """ Toggle track mute lock state """
-    pass
-def refreshLiveClips(*args, **kwargs):
-    """ Refresh live clips """
-    pass
-def scrollTo(*args, **kwargs):
-    """ Scroll to """
-    pass
-def setTrackColor(*args, **kwargs):
-    """ Set track color """
-    pass
-def setTrackName(*args, **kwargs):
-    """ Set track name """
-    pass
-def soloTrack(*args, **kwargs):
-    """ Toggle track solo state """
-    pass
-def trackCount(*args, **kwargs):
-    """ Get track count """
-    pass
-def triggerLiveClip(*args, **kwargs):
-    """ Trigger live clips """
-    pass
-version = 1.0
-# channels.py
-def channelCount(*args, **kwargs):
-    """ Get channels count """
-    pass
-def channelNumber(*args, **kwargs):
-    """ Get channel number """
-    pass
-def closeGraphEditor(*args, **kwargs):
-    """ Close graph editor """
-    pass
-def deselectAll(*args, **kwargs):
-    """ Deselect all channels """
-    pass
-def focusEditor(*args, **kwargs):
-    """ focus channel editor """
-    pass
-def getChannelColor(*args, **kwargs):
-    """ Get channel color """
-    pass
-def getChannelIndex(*args, **kwargs):
-    """ Get channel index """
-    pass
-def getChannelMidiInPort(*args, **kwargs):
-    """ Get channel midi in port """
-    pass
-def getChannelName(*args, **kwargs):
-    """ Get channel name """
-    pass
-def getChannelPan(*args, **kwargs):
-    """ Get channel pan """
-    pass
-def getChannelPitch(*args, **kwargs):
-    """ Get channel pitch """
-    pass
-def getChannelVolume(*args, **kwargs):
-    """ Get channel volume """
-    pass
-def getCurrentStepParam(*args, **kwargs):
-    """ Get current step param """
-    pass
-def getGridBit(*args, **kwargs):
-    """ Get channel grid bit """
-    pass
-def getGridBitWithLoop(*args, **kwargs):
-    """ Get grid bit with loop """
-    pass
-def getRecEventId(*args, **kwargs):
-    """ Get channel rec event id """
-    pass
-def getStepParam(*args, **kwargs):
-    """ Get step param """
-    pass
-def getTargetFxTrack(*args, **kwargs):
-    """ Get channel target FX track """
-    pass
-def incEventValue(*args, **kwargs):
-    """ increase event value """
-    pass
-def isChannelMuted(*args, **kwargs):
-    """ Get channel mute state """
-    pass
-def isChannelSelected(*args, **kwargs):
-    """ Get channel selected state """
-    pass
-def isChannelSolo(*args, **kwargs):
-    """ Get channel solo state """
-    pass
-def isGraphEditorVisible(*args, **kwargs):
-    """ Returns true if graph editor is visible """
-    pass
-def isGridBitAssigned(*args, **kwargs):
-    """ Is grid bit assigned """
-    pass
-def isHighLighted(*args, **kwargs):
-    """ Is higlight rectangle defined """
-    pass
-def midiNoteOn(*args, **kwargs):
-    """ Set midi note on for channel """
-    pass
-def muteChannel(*args, **kwargs):
-    """ Toggle channel mute state """
-    pass
-def processRECEvent(*args, **kwargs):
-    """ Process rec event """
-    pass
-def selectAll(*args, **kwargs):
-    """ Select all channels """
-    pass
-def selectChannel(*args, **kwargs):
-    """ Set channel selected state """
-    pass
-def selectOneChannel(*args, **kwargs):
-    """ Select channel exclusively """
-    pass
-def selectedChannel(*args, **kwargs):
-    """ Get selected channel number """
-    pass
-def setChannelColor(*args, **kwargs):
-    """ Set channel color """
-    pass
-def setChannelName(*args, **kwargs):
-    """ Set channel name """
-    pass
-def setChannelPan(*args, **kwargs):
-    """ Set channel pan """
-    pass
-def setChannelPitch(*args, **kwargs):
-    """ Set channel pitch """
-    pass
-def setChannelVolume(*args, **kwargs):
-    """ Set channel volume """
-    pass
-def setGridBit(*args, **kwargs):
-    """ Set channel grid bit """
-    pass
-def setStepParameterByIndex(*args, **kwargs):
-    """ Set step parameter by index """
-    pass
-def showCSForm(*args, **kwargs):
-    """ Show cs form """
-    pass
-def showEditor(*args, **kwargs):
-    """ focus channel editor """
-    pass
-def showGraphEditor(*args, **kwargs):
-    """ Show graph editor """
-    pass
-def soloChannel(*args, **kwargs):
-    """ Toggle channel solo state """
-    pass
-def updateGraphEditor(*args, **kwargs):
-    """ Update graph editor """
-    pass
-version = 1.0
-# mixer.py
-def afterRoutingChanged(*args, **kwargs):
-    """ After routing changed """
-    pass
-def armTrack(*args, **kwargs):
-    """ Toggle track armed state """
-    pass
-def automateEvent(*args, **kwargs):
-    """ Automate event """
-    pass
-def deselectAll(*args, **kwargs):
-    """ Deselect all tracks """
-    pass
-def enableTrack(*args, **kwargs):
-    """ Toggle track enabled state """
-    pass
-def getAutoSmoothEventValue(*args, **kwargs):
-    """ Get event ID value string """
-    pass
-def getCurrentTempo(*args, **kwargs):
-    """ Get current tempo """
-    pass
-def getEventIDName(*args, **kwargs):
-    """ Get event ID name """
-    pass
-def getEventIDValueString(*args, **kwargs):
-    """ Get event ID value string """
-    pass
-def getEventValue(*args, **kwargs):
-    """ Get event value from midi """
-    pass
-def getRecPPS(*args, **kwargs):
-    """ Get Rec pps """
-    pass
-def getRouteSendActive(*args, **kwargs):
-    """ Get route send state """
-    pass
-def getSongStepPos(*args, **kwargs):
-    """ Get song step position """
-    pass
-def getSongTickPos(*args, **kwargs):
-    """ Get sing tick pos """
-    pass
-def getTrackColor(*args, **kwargs):
-    """ Get track color """
-    pass
-def getTrackInfo(*args, **kwargs):
-    """ Get tracks info """
-    pass
-def getTrackName(*args, **kwargs):
-    """ Get track name """
-    pass
-def getTrackPan(*args, **kwargs):
-    """ Get track pan """
-    pass
-def getTrackPeaks(*args, **kwargs):
-    """ Get track peaks """
-    pass
-def getTrackPluginId(*args, **kwargs):
-    """ Get track plugin ID """
-    pass
-def getTrackRecordingFileName(*args, **kwargs):
-    """ Get track recording file name """
-    pass
-def getTrackVolume(*args, **kwargs):
-    """ Get track volume """
-    pass
-def isTrackArmed(*args, **kwargs):
-    """ Get track armed state """
-    pass
-def isTrackAutomationEnabled(*args, **kwargs):
-    """ Get track autotimation state """
-    pass
-def isTrackEnabled(*args, **kwargs):
-    """ Get track enabled state """
-    pass
-def isTrackMuted(*args, **kwargs):
-    """ Get track mute state """
-    pass
-def isTrackPluginValid(*args, **kwargs):
-    """ Get track plugin valid state """
-    pass
-def isTrackSelected(*args, **kwargs):
-    """ Get track selected state """
-    pass
-def isTrackSolo(*args, **kwargs):
-    """ Get track solo state """
-    pass
-def linkTrackToChannel(*args, **kwargs):
-    """ Link track to channel """
-    pass
-def muteTrack(*args, **kwargs):
-    """ Toggle track mute state """
-    pass
-def remoteFindEventValue(*args, **kwargs):
-    """ Remote find event value """
-    pass
-def selectAll(*args, **kwargs):
-    """ Select all tracks """
-    pass
-def selectTrack(*args, **kwargs):
-    """ Set track selected state """
-    pass
-def setRouteTo(*args, **kwargs):
-    """ Set route to """
-    pass
-def setTrackColor(*args, **kwargs):
-    """ Set track color """
-    pass
-def setTrackName(*args, **kwargs):
-    """ Set track name """
-    pass
-def setTrackNumber(*args, **kwargs):
-    """ Set track number """
-    pass
-def setTrackPan(*args, **kwargs):
-    """ Set track pan """
-    pass
-def setTrackVolume(*args, **kwargs):
-    """ Ser track volume """
-    pass
-def soloTrack(*args, **kwargs):
-    """ Toggle track solo state """
-    pass
-def trackCount(*args, **kwargs):
-    """ Get tracks count """
-    pass
-def trackNumber(*args, **kwargs):
-    """ Get track number """
-    pass
-version = 1.0
-# patterns.py
-def deselectAll(*args, **kwargs):
-    """ Deselect all patterns """
-    pass
-def ensureValidNoteRecord(*args, **kwargs):
-    """ Ensure Valid Note Record """
-    pass
-def findFirstNextEmptyPat(*args, **kwargs):
-    """ Find first next empty pattern """
-    pass
-def getBlockSetStatus(*args, **kwargs):
-    """ Get block set status """
-    pass
-def getChannelLoopStyle(*args, **kwargs):
-    """ Get channel loop style """
-    pass
-def getPatternColor(*args, **kwargs):
-    """ Get pattern color """
-    pass
-def getPatternLength(*args, **kwargs):
-    """ Get pattern length """
-    pass
-def getPatternName(*args, **kwargs):
-    """ Get pattern name """
-    pass
-def isPatternSelected(*args, **kwargs):
-    """ Get pattern selected state """
-    pass
-def jumpToPattern(*args, **kwargs):
-    """ Jump to pattern """
-    pass
-def patternCount(*args, **kwargs):
-    """ Get patterns count """
-    pass
-def patternMax(*args, **kwargs):
-    """ Get max pattern id """
-    pass
-def patternNumber(*args, **kwargs):
-    """ Get current pattern number """
-    pass
-def selectAll(*args, **kwargs):
-    """ Select all patterns """
-    pass
-def selectPattern(*args, **kwargs):
-    """ Select pattern """
-    pass
-def setChannelLoop(*args, **kwargs):
-    """ Set channel loop """
-    pass
-def setPatternColor(*args, **kwargs):
-    """ Set pattern color """
-    pass
-def setPatternName(*args, **kwargs):
-    """ Set pattern name """
-    pass
-version = 1.0
-# arrangement.py
-def addAutoTimeMarker(*args, **kwargs):
-    """ Add audio time marker """
-    pass
-def currentTime(*args, **kwargs):
-    """ Current time """
-    pass
-def currentTimeHint(*args, **kwargs):
-    """ Current time hint """
-    pass
-def getMarkerName(*args, **kwargs):
-    """ Get marker name """
-    pass
-def jumpToMarker(*args, **kwargs):
-    """ Jump to arrangement marker """
-    pass
-def liveSelection(*args, **kwargs):
-    """ Live selection """
-    pass
-def liveSelectionStart(*args, **kwargs):
-    """ Live selection start """
-    pass
-def selectionEnd(*args, **kwargs):
-    """ Selection end """
-    pass
-def selectionStart(*args, **kwargs):
-    """ Selection start """
-    pass
-version = 1.0
-# ui.py
-def closeActivePopupMenu(*args, **kwargs):
-    """ Close active popup menu """
-    pass
-def closeAllMenu(*args, **kwargs):
-    """ Close all menu """
-    pass
-def copy(*args, **kwargs):
-    """ Copy """
-    pass
-def crDisplayRect(*args, **kwargs):
-    """ Display selection rectangle in channel rack """
-    pass
-def cut(*args, **kwargs):
-    """ Cut """
-    pass
-def delete(*args, **kwargs):
-    """ Delete """
-    pass
-def down(*args, **kwargs):
-    """ Down keyboard key """
-    pass
-def enter(*args, **kwargs):
-    """ Enter """
-    pass
-def escape(*args, **kwargs):
-    """ Escape """
-    pass
-def getFocused(*args, **kwargs):
-    """ Get form focus state """
-    pass
-def getFocusedFormCaption(*args, **kwargs):
-    """ Get focused form caption """
-    pass
-def getFocusedNodeCaption(*args, **kwargs):
-    """ Get focused node caption """
-    pass
-def getFocusedNodeFileType(*args, **kwargs):
-    """ Get focused node file type """
-    pass
-def getFocusedPluginName(*args, **kwargs):
-    """ Get focused plugin name """
-    pass
-def getHintMsg(*args, **kwargs):
-    """ Get FL Studio hint """
-    pass
-def getHintValue(*args, **kwargs):
-    """ Get hint value """
-    pass
-def getProgTitle(*args, **kwargs):
-    """ Get FL Studio title """
-    pass
-def getSnapMode(*args, **kwargs):
-    """ Get snap mode """
-    pass
-def getTimeDispMin(*args, **kwargs):
-    """ Is time time display set to minutes """
-    pass
-def getVersion(*args, **kwargs):
-    """ Get FL Studio version as string """
-    pass
-def getVisible(*args, **kwargs):
-    """ Get form visible state """
-    pass
-def hideWindow(*args, **kwargs):
-    """ Hide window """
-    pass
-def horZoom(*args, **kwargs):
-    """ Horizontal zoom """
-    pass
-def insert(*args, **kwargs):
-    """ Insert """
-    pass
-def isBrowserAutoHide(*args, **kwargs):
-    """ Get browser auto hide state """
-    pass
-def isClosing(*args, **kwargs):
-    """ Get closing state """
-    pass
-def isInPopupMenu(*args, **kwargs):
-    """ Is in popup menu """
-    pass
-def isLoopRecEnabled(*args, **kwargs):
-    """ Is loop recording enabled """
-    pass
-def isMetronomeEnabled(*args, **kwargs):
-    """ Is metronome enabled """
-    pass
-def isPrecountEnabled(*args, **kwargs):
-    """ Is precount enabled """
-    pass
-def isStartOnInputEnabled(*args, **kwargs):
-    """ Is start on input enabled """
-    pass
-def jog(*args, **kwargs):
-    """ Generic jog (can be used to select stuff) """
-    pass
-def jog2(*args, **kwargs):
-    """ Alternate generic jog (can be used to relocate stuff) """
-    pass
-def launchAudioEditor(*args, **kwargs):
-    """ Launch audio editor """
-    pass
-def left(*args, **kwargs):
-    """ Left keyboard key """
-    pass
-def moveJog(*args, **kwargs):
-    """ Used to relocate items """
-    pass
-def navigateBrowserMenu(*args, **kwargs):
-    """ Navigate browser menu """
-    pass
-def next(*args, **kwargs):
-    """ None """
-    pass
-def nextWindow(*args, **kwargs):
-    """ Next window """
-    pass
-def no(*args, **kwargs):
-    """ No """
-    pass
-def openEventEditor(*args, **kwargs):
-    """ Open event editor """
-    pass
-def paste(*args, **kwargs):
-    """ Paste """
-    pass
-def previewBrowserMenuItem(*args, **kwargs):
-    """ Preview browser menu item """
-    pass
-def previous(*args, **kwargs):
-    """ None """
-    pass
-def right(*args, **kwargs):
-    """ Right keyboard key """
-    pass
-def selectBrowserMenuItem(*args, **kwargs):
-    """ Select browser menu item """
-    pass
-def selectWindow(*args, **kwargs):
-    """ Select window """
-    pass
-def setBrowserAutoHide(*args, **kwargs):
-    """ Set browser auto hide state """
-    pass
-def setFocused(*args, **kwargs):
-    """ Set form focus state """
-    pass
-def setHintMsg(*args, **kwargs):
-    """ Set FL Studio hint """
-    pass
-def setTimeDispMin(*args, **kwargs):
-    """ Is time time display set to minutes """
-    pass
-def showWindow(*args, **kwargs):
-    """ Show window """
-    pass
-def snapMode(*args, **kwargs):
-    """ Toggle snap mode """
-    pass
-def snapOnOff(*args, **kwargs):
-    """ Snap on/off """
-    pass
-def strip(*args, **kwargs):
-    """ Touch-sensitive jog strip (left .. center .. right) """
-    pass
-def stripHold(*args, **kwargs):
-    """ to do """
-    pass
-def stripJog(*args, **kwargs):
-    """ Touch-sensitive jog in jog mode """
-    pass
-def up(*args, **kwargs):
-    """ Up keyboard key """
-    pass
-def verZoom(*args, **kwargs):
-    """ Vertical zoom """
-    pass
-version = 1.0
-def yes(*args, **kwargs):
-    """ Yes """
-    pass
-# transport.py
-def continuousMove(*args, **kwargs):
-    """ Continuous move """
-    pass
-def continuousMovePos(*args, **kwargs):
-    """ Continuous move pos """
-    pass
-def fastForward(*args, **kwargs):
-    """ Fast forward song pos """
-    pass
-def getHWBeatLEDState(*args, **kwargs):
-    """ get HWBeatLEDState """
-    pass
-def getLoopMode(*args, **kwargs):
-    """ Get loop mode """
-    pass
-def getSongLength(*args, **kwargs):
-    """ Get song length """
-    pass
-def getSongPos(*args, **kwargs):
-    """ Get song position """
-    pass
-def getSongPosHint(*args, **kwargs):
-    """ Get song position hint """
-    pass
-def globalTransport(*args, **kwargs):
-    """ Global transport """
-    pass
-def isPlaying(*args, **kwargs):
-    """ Returns if the program is playing or stopped """
-    pass
-def isRecording(*args, **kwargs):
-    """ Get recording state """
-    pass
-def markerJumpJog(*args, **kwargs):
-    """ Jog marker jump """
-    pass
-def markerSelJog(*args, **kwargs):
-    """ Jog marker selection """
-    pass
-def record(*args, **kwargs):
-    """ Start recording """
-    pass
-def rewind(*args, **kwargs):
-    """ Rewind song """
-    pass
-def setLoopMode(*args, **kwargs):
-    """ Set loop mode """
-    pass
-def setPlaybackSpeed(*args, **kwargs):
-    """ Set playback speed """
-    pass
-def setSongPos(*args, **kwargs):
-    """ Set song position """
-    pass
-def start(*args, **kwargs):
-    """ Start playback """
-    pass
-def stop(*args, **kwargs):
-    """ Stop playback """
-    pass
-version = 1.0
-# device.py
-def baseTrackSelect(*args, **kwargs):
-    """ Base track select """
-    pass
-def createRefreshThread(*args, **kwargs):
-    """ Create refresh thread """
-    pass
-def destroyRefreshThread(*args, **kwargs):
-    """ Destroy refresh thread """
-    pass
-def directFeedback(*args, **kwargs):
-    """ Send out generic midi message """
-    pass
-def dispatch(*args, **kwargs):
-    """ Dispatch midi message """
-    pass
-def dispatchGetReceiverPortNumber(*args, **kwargs):
-    """ Get receiver port number """
-    pass
-def dispatchReceiverCount(*args, **kwargs):
-    """ Get dispatch midi message receiver count """
-    pass
-def findEventID(*args, **kwargs):
-    """ Find event id """
-    pass
-def forwardMIDICC(*args, **kwargs):
-    """ Send  generic midi message to active plugin """
-    pass
-def fullRefresh(*args, **kwargs):
-    """ Perform full refresh """
-    pass
-def getIdleElapsed(*args, **kwargs):
-    """ Get idle elapsed  """
-    pass
-def getLinkedInfo(*args, **kwargs):
-    """ Get linked control info back or -1 if not linked """
-    pass
-def getLinkedValue(*args, **kwargs):
-    """ Get normalized value of linked control back or -1 if not linked """
-    pass
-def getName(*args, **kwargs):
-    """ Get device name """
-    pass
-def getPortNumber(*args, **kwargs):
-    """ Is device assigned """
-    pass
-def hardwareRefreshMixerTrack(*args, **kwargs):
-    """ Hardware refresh mixer track """
-    pass
-def isAssigned(*args, **kwargs):
-    """ Is device assigned """
-    pass
-def isDoubleClick(*args, **kwargs):
-    """ Double-clicking handling for MIDI """
-    pass
-def isMidiOutAssigned(*args, **kwargs):
-    """ Is device midi out assigned """
-    pass
-def midiOutMsg(*args, **kwargs):
-    """ Send out midi message """
-    pass
-def midiOutNewMsg(*args, **kwargs):
-    """ Send out new midi message """
-    pass
-def midiOutSysex(*args, **kwargs):
-    """ Send midi out sysex """
-    pass
-def processMIDICC(*args, **kwargs):
-    """ Send out generic midi message """
-    pass
-def repeatMidiEvent(*args, **kwargs):
-    """ Repeat midi event """
-    pass
-def sendMsgGeneric(*args, **kwargs):
-    """ Send out generic midi message """
-    pass
-def setHasMeters(*args, **kwargs):
-    """ Set has meters """
-    pass
-def stopRepeatMidiEvent(*args, **kwargs):
-    """ stop repeat midi event """
-    pass
-version = 1.0
-# plugins.py
-def getParamCount(*args, **kwargs):
-    """ Get plugin parameter count """
-    pass
-def getParamName(*args, **kwargs):
-    """ Get plugin parameter name """
-    pass
-def getParamValue(*args, **kwargs):
-    """ Get plugin parameter value """
-    pass
-def getParamValueString(*args, **kwargs):
-    """ Get plugin parameter value string """
-    pass
-def getPluginName(*args, **kwargs):
-    """ Get plugin name """
-    pass
-def isValid(*args, **kwargs):
-    """ Get plugin validity """
-    pass
-def setParamValue(*args, **kwargs):
-    """ Set plugin parameter value """
-    pass
-version = 1.0
-# general.py
-def getChangedFlag(*args, **kwargs):
-    """ Get changed flag  """
-    pass
-def getPrecount(*args, **kwargs):
-    """ Get precounr """
-    pass
-def getRecPPB(*args, **kwargs):
-    """ Get rec ppb """
-    pass
-def getRecPPQ(*args, **kwargs):
-    """ Get rec ppq """
-    pass
-def getUndoHistoryCount(*args, **kwargs):
-    """ Get undo history count """
-    pass
-def getUndoHistoryLast(*args, **kwargs):
-    """ Get undo history last """
-    pass
-def getUndoHistoryPos(*args, **kwargs):
-    """ Get undo history position """
-    pass
-def getUndoLevelHint(*args, **kwargs):
-    """ Get undo level """
-    pass
-def getUseMetronome(*args, **kwargs):
-    """ Get use metronome """
-    pass
-def getVersion(*args, **kwargs):
-    """ Get Midi scripting version """
-    pass
-def processRECEvent(*args, **kwargs):
-    """ Process rec event """
-    pass
-def restoreUndo(*args, **kwargs):
-    """ Restore undo """
-    pass
-def restoreUndoLevel(*args, **kwargs):
-    """ Restore undo by level """
-    pass
-def saveUndo(*args, **kwargs):
-    """ Save undo """
-    pass
-def setUndoHistoryCount(*args, **kwargs):
-    """ Set undo history count """
-    pass
-def setUndoHistoryLast(*args, **kwargs):
-    """ Set undo history last """
-    pass
-def setUndoHistoryPos(*args, **kwargs):
-    """ Set undo history position """
-    pass
-def undo(*args, **kwargs):
-    """ Undo/redo last, or move down in undo history """
-    pass
-def undoDown(*args, **kwargs):
-    """ Move down in undo history  """
-    pass
-def undoUp(*args, **kwargs):
-    """ Move up in undo history  """
-    pass
-def undoUpDown(*args, **kwargs):
-    """ Move up and down in undo history """
-    pass
-version = 1.0
-# launchMapPages.py
-def checkMapForHiddenItem(*args, **kwargs):
-    """ Check for launchpad hidden item """
-    pass
-def createOverlayMap(*args, **kwargs):
-    """ Create overlay map """
-    pass
-def getMapCount(*args, **kwargs):
-    """ Get launchmap items length """
-    pass
-def getMapItemAftertouch(*args, **kwargs):
-    """ Get launchmap item aftertouch """
-    pass
-def getMapItemChannel(*args, **kwargs):
-    """ Get launchmap item destination channel """
-    pass
-def getMapItemColor(*args, **kwargs):
-    """ Get launchmap item color """
-    pass
-def init(*args, **kwargs):
-    """ Init launchmap pages """
-    pass
-def length(*args, **kwargs):
-    """ Get launchmap pages length """
-    pass
-def processMapItem(*args, **kwargs):
-    """ Process map item """
-    pass
-def releaseMapItem(*args, **kwargs):
-    """ Release map item """
-    pass
-def setMapItemTarget(*args, **kwargs):
-    """ Set map item destination target """
-    pass
-def updateMap(*args, **kwargs):
-    """ Update launchmap page """
-    pass
-version = 1.0
+# playlist.pydef getDisplayZone(*args, **kwargs):    """ Get display zone number """    passdef getLiveBlockColor(*args, **kwargs):    """ Get live block color """    passdef getLiveBlockStatus(*args, **kwargs):    """ Get live block status """    passdef getLiveLoopMode(*args, **kwargs):    """ Get live loop mode """    passdef getLivePosSnap(*args, **kwargs):    """ Get live pos snap """    passdef getLiveStatus(*args, **kwargs):    """ Get live status """    passdef getLiveTrigSnap(*args, **kwargs):    """ Get live trig snap """    passdef getLiveTriggerMode(*args, **kwargs):    """ Get live trigger mode """    passdef getSongStartTickPos(*args, **kwargs):    """ Get song start tick position """    passdef getTrackActivityLevel(*args, **kwargs):    """ Get track activity level """    passdef getTrackActivityLevelVis(*args, **kwargs):    """ Get track visual activity level """    passdef getTrackColor(*args, **kwargs):    """ Get track color """    passdef getTrackName(*args, **kwargs):    """ Get track name """    passdef getVisTimeBar(*args, **kwargs):    """ Get time bar """    passdef getVisTimeStep(*args, **kwargs):    """ Get time step """    passdef getVisTimeTick(*args, **kwargs):    """ Get time tick """    passdef incLiveLoopMode(*args, **kwargs):    """ Increase live loop mode """    passdef incLivePosSnap(*args, **kwargs):    """ Increase live pos snap """    passdef incLiveTrigMode(*args, **kwargs):    """ Increase live trig mode """    passdef incLiveTrigSnap(*args, **kwargs):    """ Increase live trig snap """    passdef isTrackMuteLock(*args, **kwargs):    """ Get track mute lock state """    passdef isTrackMuted(*args, **kwargs):    """ Get track mute state """    passdef isTrackSolo(*args, **kwargs):    """ Get track solo state """    passdef liveBlockNumToTime(*args, **kwargs):    """ Live block number to time """    passdef liveDisplayZone(*args, **kwargs):    """ Live display zone """    passdef liveTimeToBlockNum(*args, **kwargs):    """ Live time to block number """    passdef lockDisplayZone(*args, **kwargs):    """ Lock display zone """    passdef muteTrack(*args, **kwargs):    """ Toggle track mute state """    passdef muteTrackLock(*args, **kwargs):    """ Toggle track mute lock state """    passdef refreshLiveClips(*args, **kwargs):    """ Refresh live clips """    passdef scrollTo(*args, **kwargs):    """ Scroll to """    passdef setTrackColor(*args, **kwargs):    """ Set track color """    passdef setTrackName(*args, **kwargs):    """ Set track name """    passdef soloTrack(*args, **kwargs):    """ Toggle track solo state """    passdef trackCount(*args, **kwargs):    """ Get track count """    passdef triggerLiveClip(*args, **kwargs):    """ Trigger live clips """    passversion = 1.0# channels.pydef channelCount(*args, **kwargs):    """ Get channels count """    passdef channelNumber(*args, **kwargs):    """ Get channel number """    passdef closeGraphEditor(*args, **kwargs):    """ Close graph editor """    passdef deselectAll(*args, **kwargs):    """ Deselect all channels """    passdef focusEditor(*args, **kwargs):    """ focus channel editor """    passdef getChannelColor(*args, **kwargs):    """ Get channel color """    passdef getChannelIndex(*args, **kwargs):    """ Get channel index """    passdef getChannelMidiInPort(*args, **kwargs):    """ Get channel midi in port """    passdef getChannelName(*args, **kwargs):    """ Get channel name """    passdef getChannelPan(*args, **kwargs):    """ Get channel pan """    passdef getChannelPitch(*args, **kwargs):    """ Get channel pitch """    passdef getChannelVolume(*args, **kwargs):    """ Get channel volume """    passdef getCurrentStepParam(*args, **kwargs):    """ Get current step param """    passdef getGridBit(*args, **kwargs):    """ Get channel grid bit """    passdef getGridBitWithLoop(*args, **kwargs):    """ Get grid bit with loop """    passdef getRecEventId(*args, **kwargs):    """ Get channel rec event id """    passdef getStepParam(*args, **kwargs):    """ Get step param """    passdef getTargetFxTrack(*args, **kwargs):    """ Get channel target FX track """    passdef incEventValue(*args, **kwargs):    """ increase event value """    passdef isChannelMuted(*args, **kwargs):    """ Get channel mute state """    passdef isChannelSelected(*args, **kwargs):    """ Get channel selected state """    passdef isChannelSolo(*args, **kwargs):    """ Get channel solo state """    passdef isGraphEditorVisible(*args, **kwargs):    """ Returns true if graph editor is visible """    passdef isGridBitAssigned(*args, **kwargs):    """ Is grid bit assigned """    passdef isHighLighted(*args, **kwargs):    """ Is higlight rectangle defined """    passdef midiNoteOn(*args, **kwargs):    """ Set midi note on for channel """    passdef muteChannel(*args, **kwargs):    """ Toggle channel mute state """    passdef processRECEvent(*args, **kwargs):    """ Process rec event """    passdef selectAll(*args, **kwargs):    """ Select all channels """    passdef selectChannel(*args, **kwargs):    """ Set channel selected state """    passdef selectOneChannel(*args, **kwargs):    """ Select channel exclusively """    passdef selectedChannel(*args, **kwargs):    """ Get selected channel number """    passdef setChannelColor(*args, **kwargs):    """ Set channel color """    passdef setChannelName(*args, **kwargs):    """ Set channel name """    passdef setChannelPan(*args, **kwargs):    """ Set channel pan """    passdef setChannelPitch(*args, **kwargs):    """ Set channel pitch """    passdef setChannelVolume(*args, **kwargs):    """ Set channel volume """    passdef setGridBit(*args, **kwargs):    """ Set channel grid bit """    passdef setStepParameterByIndex(*args, **kwargs):    """ Set step parameter by index """    passdef showCSForm(*args, **kwargs):    """ Show cs form """    passdef showEditor(*args, **kwargs):    """ focus channel editor """    passdef showGraphEditor(*args, **kwargs):    """ Show graph editor """    passdef soloChannel(*args, **kwargs):    """ Toggle channel solo state """    passdef updateGraphEditor(*args, **kwargs):    """ Update graph editor """    passversion = 1.0# midi.pyCC_ChanAfterTouch = 253CC_Free = 384CC_KeyAfterTouch = 254CC_Normal = 0CC_Note = 256CC_PLTrack = 384CC_PitchBend = 255CC_Special = 128CT_AudioClip = 4CT_AutoClip = 5CT_ColorT = (6972764, 8814968, 5328737, 4670528, 7893352, 7893352)CT_GenPlug = 2CT_Layer = 3CT_Sampler = 0CT_TS404 = 1ChannelDefaultVolume = 0.78125DotNote_Default = 60DotPan_Default = 64DotVol_Default = 100DotVol_Max = 128EE_EE = 0EE_PL = 2EE_PR = 1EKRes = 0.041666666666666664def EncodeRemoteControlID(*args, **kwargs):    """ None """    passEventNameT = ['Note Off', 'Note On ', 'Key Aftertouch', 'Control Change', 'Program Change', 'Channel Aftertouch', 'Pitch Bend', 'System Message']Event_CantInterpolate = 0Event_Centered = 4Event_Float = 2FFNEP_DontPromptName = 2FFNEP_FindFirst = 0FPT_AddAltMarker = 34FPT_AddMarker = 33FPT_ArrangementJog = 123FPT_ChannelJog = 102FPT_Copy = 51FPT_CountDown = 115FPT_Cut = 50FPT_Delete = 54FPT_Down = 41FPT_Enter = 80FPT_Escape = 81FPT_F1 = 60FPT_F10 = 69FPT_F11 = 70FPT_F12 = 71FPT_F2 = 61FPT_F3 = 62FPT_F4 = 63FPT_F5 = 64FPT_F6 = 65FPT_F7 = 66FPT_F8 = 67FPT_F9 = 68FPT_FastForward = 14FPT_HZoomJog = 44FPT_Insert = 53FPT_ItemMenu = 91FPT_Jog = 0FPT_Jog2 = 1FPT_Left = 42FPT_Loop = 15FPT_LoopRecord = 113FPT_MarkerJumpJog = 35FPT_MarkerSelJog = 36FPT_Menu = 90FPT_Metronome = 110FPT_MixerWindowJog = 121FPT_Mode = 17FPT_MoveJog = 8FPT_Mute = 16FPT_Next = 6FPT_NextMixerWindow = 120FPT_NextWindow = 58FPT_No = 83FPT_NudgeMinus = 107FPT_NudgePlus = 108FPT_Overdub = 112FPT_Paste = 52FPT_PatternJog = 100FPT_Play = 10FPT_Previous = 5FPT_PreviousNext = 7FPT_Punch = 30FPT_PunchIn = 31FPT_PunchOut = 32FPT_Record = 12FPT_Rewind = 13FPT_Right = 43FPT_Save = 92FPT_SaveNew = 93FPT_ShuffleJog = 122FPT_Snap = 48FPT_SnapMode = 49FPT_StepEdit = 114FPT_Stop = 11FPT_Strip = 2FPT_StripHold = 4FPT_StripJog = 3FPT_TapTempo = 106FPT_TempoJog = 105FPT_TrackJog = 101FPT_Undo = 20FPT_UndoJog = 22FPT_UndoUp = 21FPT_Up = 40FPT_VZoomJog = 45FPT_WaitForInput = 111FPT_WindowJog = 59FPT_Yes = 82FineTune_Default = 0FromMIDI_Half = 536870912FromMIDI_Max = 1073741824GT_All = 15GT_Cannot = -1GT_Form = 2GT_Global = 8GT_Menu = 4GT_None = 0GT_Plugin = 1HARMONICSCALE_AEOLIAN = 20HARMONICSCALE_ARABIC = 11HARMONICSCALE_BLUES = 10HARMONICSCALE_CHROMATIC = 22HARMONICSCALE_DIMINISHED = 4HARMONICSCALE_DOMINANTBEBOP = 9HARMONICSCALE_DORIAN = 16HARMONICSCALE_ENIGMATIC = 12HARMONICSCALE_HARMONICMINOR = 1HARMONICSCALE_HUNGARIANMINOR = 15HARMONICSCALE_JAPINSEN = 7HARMONICSCALE_LAST = 22HARMONICSCALE_LOCRIAN = 21HARMONICSCALE_LYDIAN = 18HARMONICSCALE_MAJOR = 0HARMONICSCALE_MAJORBEBOP = 8HARMONICSCALE_MAJORPENTATONIC = 5HARMONICSCALE_MELODICMINOR = 2HARMONICSCALE_MINORPENTATONIC = 6HARMONICSCALE_MIXOLYDIAN = 19HARMONICSCALE_NEAPOLITAN = 13HARMONICSCALE_NEAPOLITANMINOR = 14HARMONICSCALE_PHRYGIAN = 17HARMONICSCALE_WHOLETONE = 3HW_Dirty_FocusedWindow = 32HW_Dirty_LEDs = 256HW_Dirty_Mixer_Controls = 4HW_Dirty_Mixer_Display = 2HW_Dirty_Mixer_Sel = 1HW_Dirty_Performance = 64HW_Dirty_RemoteLinkValues = 512HW_Dirty_RemoteLinks = 16LB_Status_Default = 0LB_Status_Simple = 1LB_Status_Simplest = 2MIDI_ACTIVESENSING = 254MIDI_BEGINSYSEX = 240MIDI_CHANAFTERTOUCH = 208MIDI_CONTINUE = 251MIDI_CONTROLCHANGE = 176MIDI_ENDSYSEX = 247MIDI_KEYAFTERTOUCH = 160MIDI_MTCQUARTERFRAME = 241MIDI_NOTEOFF = 128MIDI_NOTEON = 144MIDI_PITCHBEND = 224MIDI_PROGRAMCHANGE = 192MIDI_SONGPOSPTR = 242MIDI_SONGSELECT = 243MIDI_START = 250MIDI_STOP = 252MIDI_SYSTEMMESSAGE = 240MIDI_SYSTEMRESET = 255MIDI_TIMINGCLOCK = 248MaxInt = 2147483647MiddleNote_Default = 60PEAK_L = 0PEAK_LR = 2PEAK_LR_INV = 3PEAK_R = 1PME_FromHost = 16PME_FromMIDI = 32PME_FromScript = 64PME_LiveInput = 1PME_PreviewNote = 8PME_RECFlagsT = [433, 1013]PME_System = 2PME_System_Safe = 4PM_Playing = 1PM_Precount = 2PM_Stopped = 0REC_AnyInternalCtrl = 10240REC_Chan_AC_First = 1536REC_Chan_AC_Last = 1791REC_Chan_Arp_Chord = 770REC_Chan_Arp_First = 768REC_Chan_Arp_Gate = 772REC_Chan_Arp_Last = 1023REC_Chan_Arp_Repeat = 773REC_Chan_Arp_Time = 771REC_Chan_Clip = 20480REC_Chan_Crossfade = 10REC_Chan_Delay_First = 512REC_Chan_Delay_Last = 767REC_Chan_Delay_Time = 516REC_Chan_Env_First = 4096REC_Chan_Env_Hole = 4109REC_Chan_Env_LFOA = 4107REC_Chan_Env_LFO_First = 4105REC_Chan_Env_Last = 6143REC_Chan_Env_MA = 4104REC_Chan_Env_PLast = 4112REC_Chan_FCut = 2REC_Chan_FRes = 3REC_Chan_FType = 5REC_Chan_FXTrack = 8REC_Chan_First = 0REC_Chan_GateTime = 9REC_Chan_Last = 268435455REC_Chan_Misc = 1024REC_Chan_Mute = 7REC_Chan_NoteMask = 4294967280REC_Chan_NoteOff = 16416REC_Chan_NoteOn = 16384REC_Chan_NoteSlide = 16392REC_Chan_NoteSlideMask = 8REC_Chan_NoteSlideOfs = 16393REC_Chan_NoteSlideTo = 16392REC_Chan_Note_First = 16384REC_Chan_Note_Last = 16416REC_Chan_Note_Num = 32REC_Chan_OfsFCut = 19REC_Chan_OfsFRes = 20REC_Chan_OfsPan = 16REC_Chan_OfsPitch = 18REC_Chan_OfsVol = 17REC_Chan_Pan = 1REC_Chan_PianoRoll = 16384REC_Chan_Pitch = 4REC_Chan_Plugin_First = 32768REC_Chan_Plugin_Last = 65535REC_Chan_PortaTime = 6REC_Chan_SmpOfs = 13REC_Chan_StretchTime = 14REC_Chan_SwingMix = 12REC_Chan_TS404_Env_First = 287REC_Chan_TS404_Env_Last = 291REC_Chan_TS404_FCut = 274REC_Chan_TS404_FRes = 275REC_Chan_TS404_First = 256REC_Chan_TS404_Last = 511REC_Chan_TS404_Valid_First = 259REC_Chan_TS404_Valid_Last = 293REC_Chan_TimeOfs = 11REC_Chan_Track_First = 1280REC_Chan_Track_Last = 1535REC_Chan_Track_PLast = 1282REC_Chan_Vol = 0REC_Control = 973REC_Controller = 981REC_EnvRange = 256REC_FromInternalCtrl = 2081REC_FromMIDI = 32REC_FromMixThread = 1REC_GetValue = 2REC_GlobalChan = 4095REC_GlobalPlug = 255REC_GlobalPlugTrack = 127REC_Global_First = 1073741824REC_Global_Last = 1073807360REC_Init = 512REC_InitStore = 576REC_InternalCtrl = 2048REC_InvalidID = 2147483647REC_ItemMask = 65535REC_ItemRange = 65536REC_LastTweakedFirst = -32REC_LastTweakedLast = -31REC_MIDIController = 1013REC_MainFCut = 1073741828REC_MainFRes = 1073741827REC_MainPitch = 1073741826REC_MainShuffle = 1073741825REC_MainVol = 1073741824REC_MaxChan = 4096REC_MaxPat = 4096REC_MixerMask = 4194303REC_Mixer_EQ_First = 536879056REC_Mixer_EQ_Freq = 536879064REC_Mixer_EQ_Gain = 536879056REC_Mixer_EQ_Last = 536879079REC_Mixer_EQ_Q = 536879072REC_Mixer_EQ_Type = 536879080REC_Mixer_First = 536878912REC_Mixer_Last = 536880959REC_Mixer_Pan = 536879041REC_Mixer_SS = 536879042REC_Mixer_Send_First = 536878912REC_Mixer_Send_Last = 536879039REC_Mixer_Vol = 536879040REC_NoLastTweaked = 16384REC_NoLink = 1024REC_NoSaveUndo = 32768REC_None = 2147483647REC_PLClip_First = 0REC_PLClip_Last = 1610612735REC_PLTrack_First = 1610612736REC_PLTrack_Last = 1879048191REC_Pat_Block = 1610612736REC_Pat_Clip = 1342197760REC_Pat_First = 1342177280REC_Pat_Last = 1610612735REC_Playlist = 1342177280REC_Playlist_First = 1342177280REC_Playlist_Last = 1879048191REC_Playlist_Old = 1342177280REC_PlugCallback = 960REC_PlugReserved = 4096REC_Plug_First = 536870912REC_Plug_General_First = 536878848REC_Plug_General_Last = 536878911REC_Plug_Last = 1073741823REC_Plug_MixLevel = 536878849REC_Plug_Mute = 536878848REC_Plug_Plugin_First = 536903680REC_Plug_Plugin_Last = 536936447REC_PluginBase = 32768REC_PluginRange = 32768REC_Proj_First = -257REC_Reserved = 2147483648REC_SetAll = 977REC_SetChanged = 128REC_SetTouched = 256REC_ShowHint = 4REC_Smoothed = 8192REC_SomeGeneric = 2147483646REC_SongLength = -3REC_SongPosition = -2REC_Special = -1REC_StartStop = -1REC_Store = 64REC_TS404Delay_Feed = 1073742080REC_TS404Delay_First = 1073742080REC_TS404Delay_Pan = 1073742081REC_TS404Delay_Time = 1073742083REC_TS404Delay_Vol = 1073742082REC_Tempo = 1073741829REC_TrackRange = 16REC_UpdateControl = 16REC_UpdatePlugLabel = 8REC_UpdateValue = 1REC_Visual = 26REC_WrapperAfterTouch = 268406912REC_WrapperModWheel = 268406785ROUTE_StartingFromThis = 1ROUTE_ToThis = 0SM_Pat = 0SM_Song = 1SONGLENGTH_ABSTICKS = 2SONGLENGTH_BARS = 3SONGLENGTH_MS = 0SONGLENGTH_S = 1SONGLENGTH_STEPS = 4SONGLENGTH_TICKS = 5ST_Beat = 1ST_Int = 0ST_PGB = 2Snap_AltNone = 512Snap_Bar = 14Snap_Beat = 13Snap_Cell = 1Snap_Default = -2Snap_Events = 16Snap_FlagsMask = 255Snap_ForceCell = 256Snap_FourthBar = 15Snap_FourthBeat = 10Snap_FourthStep = 5Snap_HalfBar = 17Snap_HalfBeat = 12Snap_HalfStep = 7Snap_Line = 0Snap_Markers = 17Snap_None = 3Snap_SixthBar = 14Snap_SixthBeat = 9Snap_SixthStep = 4Snap_Step = 8Snap_ThirdBar = 16Snap_ThirdBeat = 11Snap_ThirdStep = 6StartcurfxCancelSmoothing = 2TLC_ColumnMode = 128TLC_Fill = 2TLC_GlobalSnap = 8TLC_MuteOthers = 1TLC_NoHardwareUpdate = 1073741824TLC_NoPlayCheck = 64TLC_NoSnap = 16TLC_Queue = 4TLC_Release = 32TLC_SecondPass = 2147483648TLC_SubNum_ClipPos = 65536TLC_SubNum_GroupNum = 131072TLC_SubNum_Leave = 262144TLC_SubNum_Normal = 0TLC_SubNum_Read = 196608TLC_TrackSnap = 0TLC_TriggerCheckColumnMode = 512TLC_WeakColumnMode = 256TN_FirstIns = 1TN_LastIns = 2TN_Master = 0TN_Sel = 3TackDefaultVolume = 0.8TrackNum_Master = 0TranzPort_OffBlinkT = [144, 65680]TranzPort_OffOnBlinkT = [144, 8323216, 65680]TranzPort_OffOnT = [144, 8323216]UF_AudioRec = 256UF_AutoClip = 512UF_EE = 1UF_EEPR = 3UF_Knob = 32UF_None = 0UF_PL = 4UF_PLMarker = 2048UF_PR = 2UF_PRMarker = 1024UF_Plugin = 4096UF_SS = 2UF_SSLooping = 8192curfxMinimalLatencyUpdate = 8curfxNoDeselectAll = 4curfxScrollToMakeVisible = 1fxSoloGetValue = 3fxSoloModeIgnorePrevious = 4fxSoloModeWithDestTracks = 2fxSoloModeWithSourceTracks = 1fxSoloSetOff = 0fxSoloSetOn = 1fxSoloToggle = 2pFinePitch = 3pModX = 5pModY = 6pPan = 4pPitch = 0pRelease = 2pShift = 7pVelocity = 1ssLoopNextBar = -3ssLoopNextBeat = -2ssLoopNextStep = -1ssLoopOff = 0widBrowser = 4widChannelRack = 1widMixer = 0widPianoRoll = 3widPlaylist = 2# mixer.pydef afterRoutingChanged(*args, **kwargs):    """ After routing changed """    passdef armTrack(*args, **kwargs):    """ Toggle track armed state """    passdef automateEvent(*args, **kwargs):    """ Automate event """    passdef deselectAll(*args, **kwargs):    """ Deselect all tracks """    passdef enableTrack(*args, **kwargs):    """ Toggle track enabled state """    passdef getAutoSmoothEventValue(*args, **kwargs):    """ Get event ID value string """    passdef getCurrentTempo(*args, **kwargs):    """ Get current tempo """    passdef getEventIDName(*args, **kwargs):    """ Get event ID name """    passdef getEventIDValueString(*args, **kwargs):    """ Get event ID value string """    passdef getEventValue(*args, **kwargs):    """ Get event value from midi """    passdef getRecPPS(*args, **kwargs):    """ Get Rec pps """    passdef getRouteSendActive(*args, **kwargs):    """ Get route send state """    passdef getSongStepPos(*args, **kwargs):    """ Get song step position """    passdef getSongTickPos(*args, **kwargs):    """ Get sing tick pos """    passdef getTrackColor(*args, **kwargs):    """ Get track color """    passdef getTrackInfo(*args, **kwargs):    """ Get tracks info """    passdef getTrackName(*args, **kwargs):    """ Get track name """    passdef getTrackPan(*args, **kwargs):    """ Get track pan """    passdef getTrackPeaks(*args, **kwargs):    """ Get track peaks """    passdef getTrackPluginId(*args, **kwargs):    """ Get track plugin ID """    passdef getTrackRecordingFileName(*args, **kwargs):    """ Get track recording file name """    passdef getTrackVolume(*args, **kwargs):    """ Get track volume """    passdef isTrackArmed(*args, **kwargs):    """ Get track armed state """    passdef isTrackAutomationEnabled(*args, **kwargs):    """ Get track autotimation state """    passdef isTrackEnabled(*args, **kwargs):    """ Get track enabled state """    passdef isTrackMuted(*args, **kwargs):    """ Get track mute state """    passdef isTrackPluginValid(*args, **kwargs):    """ Get track plugin valid state """    passdef isTrackSelected(*args, **kwargs):    """ Get track selected state """    passdef isTrackSolo(*args, **kwargs):    """ Get track solo state """    passdef linkTrackToChannel(*args, **kwargs):    """ Link track to channel """    passdef muteTrack(*args, **kwargs):    """ Toggle track mute state """    passdef remoteFindEventValue(*args, **kwargs):    """ Remote find event value """    passdef selectAll(*args, **kwargs):    """ Select all tracks """    passdef selectTrack(*args, **kwargs):    """ Set track selected state """    passdef setRouteTo(*args, **kwargs):    """ Set route to """    passdef setTrackColor(*args, **kwargs):    """ Set track color """    passdef setTrackName(*args, **kwargs):    """ Set track name """    passdef setTrackNumber(*args, **kwargs):    """ Set track number """    passdef setTrackPan(*args, **kwargs):    """ Set track pan """    passdef setTrackVolume(*args, **kwargs):    """ Ser track volume """    passdef soloTrack(*args, **kwargs):    """ Toggle track solo state """    passdef trackCount(*args, **kwargs):    """ Get tracks count """    passdef trackNumber(*args, **kwargs):    """ Get track number """    passversion = 1.0# patterns.pydef deselectAll(*args, **kwargs):    """ Deselect all patterns """    passdef ensureValidNoteRecord(*args, **kwargs):    """ Ensure Valid Note Record """    passdef findFirstNextEmptyPat(*args, **kwargs):    """ Find first next empty pattern """    passdef getBlockSetStatus(*args, **kwargs):    """ Get block set status """    passdef getChannelLoopStyle(*args, **kwargs):    """ Get channel loop style """    passdef getPatternColor(*args, **kwargs):    """ Get pattern color """    passdef getPatternLength(*args, **kwargs):    """ Get pattern length """    passdef getPatternName(*args, **kwargs):    """ Get pattern name """    passdef isPatternSelected(*args, **kwargs):    """ Get pattern selected state """    passdef jumpToPattern(*args, **kwargs):    """ Jump to pattern """    passdef patternCount(*args, **kwargs):    """ Get patterns count """    passdef patternMax(*args, **kwargs):    """ Get max pattern id """    passdef patternNumber(*args, **kwargs):    """ Get current pattern number """    passdef selectAll(*args, **kwargs):    """ Select all patterns """    passdef selectPattern(*args, **kwargs):    """ Select pattern """    passdef setChannelLoop(*args, **kwargs):    """ Set channel loop """    passdef setPatternColor(*args, **kwargs):    """ Set pattern color """    passdef setPatternName(*args, **kwargs):    """ Set pattern name """    passversion = 1.0# arrangement.pydef addAutoTimeMarker(*args, **kwargs):    """ Add audio time marker """    passdef currentTime(*args, **kwargs):    """ Current time """    passdef currentTimeHint(*args, **kwargs):    """ Current time hint """    passdef getMarkerName(*args, **kwargs):    """ Get marker name """    passdef jumpToMarker(*args, **kwargs):    """ Jump to arrangement marker """    passdef liveSelection(*args, **kwargs):    """ Live selection """    passdef liveSelectionStart(*args, **kwargs):    """ Live selection start """    passdef selectionEnd(*args, **kwargs):    """ Selection end """    passdef selectionStart(*args, **kwargs):    """ Selection start """    passversion = 1.0# ui.pydef closeActivePopupMenu(*args, **kwargs):    """ Close active popup menu """    passdef closeAllMenu(*args, **kwargs):    """ Close all menu """    passdef copy(*args, **kwargs):    """ Copy """    passdef crDisplayRect(*args, **kwargs):    """ Display selection rectangle in channel rack """    passdef cut(*args, **kwargs):    """ Cut """    passdef delete(*args, **kwargs):    """ Delete """    passdef down(*args, **kwargs):    """ Down keyboard key """    passdef enter(*args, **kwargs):    """ Enter """    passdef escape(*args, **kwargs):    """ Escape """    passdef getFocused(*args, **kwargs):    """ Get form focus state """    passdef getFocusedFormCaption(*args, **kwargs):    """ Get focused form caption """    passdef getFocusedNodeCaption(*args, **kwargs):    """ Get focused node caption """    passdef getFocusedNodeFileType(*args, **kwargs):    """ Get focused node file type """    passdef getFocusedPluginName(*args, **kwargs):    """ Get focused plugin name """    passdef getHintMsg(*args, **kwargs):    """ Get FL Studio hint """    passdef getHintValue(*args, **kwargs):    """ Get hint value """    passdef getProgTitle(*args, **kwargs):    """ Get FL Studio title """    passdef getSnapMode(*args, **kwargs):    """ Get snap mode """    passdef getTimeDispMin(*args, **kwargs):    """ Is time time display set to minutes """    passdef getVersion(*args, **kwargs):    """ Get FL Studio version as string """    passdef getVisible(*args, **kwargs):    """ Get form visible state """    passdef hideWindow(*args, **kwargs):    """ Hide window """    passdef horZoom(*args, **kwargs):    """ Horizontal zoom """    passdef insert(*args, **kwargs):    """ Insert """    passdef isBrowserAutoHide(*args, **kwargs):    """ Get browser auto hide state """    passdef isClosing(*args, **kwargs):    """ Get closing state """    passdef isInPopupMenu(*args, **kwargs):    """ Is in popup menu """    passdef isLoopRecEnabled(*args, **kwargs):    """ Is loop recording enabled """    passdef isMetronomeEnabled(*args, **kwargs):    """ Is metronome enabled """    passdef isPrecountEnabled(*args, **kwargs):    """ Is precount enabled """    passdef isStartOnInputEnabled(*args, **kwargs):    """ Is start on input enabled """    passdef jog(*args, **kwargs):    """ Generic jog (can be used to select stuff) """    passdef jog2(*args, **kwargs):    """ Alternate generic jog (can be used to relocate stuff) """    passdef launchAudioEditor(*args, **kwargs):    """ Launch audio editor """    passdef left(*args, **kwargs):    """ Left keyboard key """    passdef moveJog(*args, **kwargs):    """ Used to relocate items """    passdef navigateBrowserMenu(*args, **kwargs):    """ Navigate browser menu """    passdef next(*args, **kwargs):    """ None """    passdef nextWindow(*args, **kwargs):    """ Next window """    passdef no(*args, **kwargs):    """ No """    passdef openEventEditor(*args, **kwargs):    """ Open event editor """    passdef paste(*args, **kwargs):    """ Paste """    passdef previewBrowserMenuItem(*args, **kwargs):    """ Preview browser menu item """    passdef previous(*args, **kwargs):    """ None """    passdef right(*args, **kwargs):    """ Right keyboard key """    passdef selectBrowserMenuItem(*args, **kwargs):    """ Select browser menu item """    passdef selectWindow(*args, **kwargs):    """ Select window """    passdef setBrowserAutoHide(*args, **kwargs):    """ Set browser auto hide state """    passdef setFocused(*args, **kwargs):    """ Set form focus state """    passdef setHintMsg(*args, **kwargs):    """ Set FL Studio hint """    passdef setTimeDispMin(*args, **kwargs):    """ Is time time display set to minutes """    passdef showWindow(*args, **kwargs):    """ Show window """    passdef snapMode(*args, **kwargs):    """ Toggle snap mode """    passdef snapOnOff(*args, **kwargs):    """ Snap on/off """    passdef strip(*args, **kwargs):    """ Touch-sensitive jog strip (left .. center .. right) """    passdef stripHold(*args, **kwargs):    """ to do """    passdef stripJog(*args, **kwargs):    """ Touch-sensitive jog in jog mode """    passdef up(*args, **kwargs):    """ Up keyboard key """    passdef verZoom(*args, **kwargs):    """ Vertical zoom """    passversion = 1.0def yes(*args, **kwargs):    """ Yes """    pass# transport.pydef continuousMove(*args, **kwargs):    """ Continuous move """    passdef continuousMovePos(*args, **kwargs):    """ Continuous move pos """    passdef fastForward(*args, **kwargs):    """ Fast forward song pos """    passdef getHWBeatLEDState(*args, **kwargs):    """ get HWBeatLEDState """    passdef getLoopMode(*args, **kwargs):    """ Get loop mode """    passdef getSongLength(*args, **kwargs):    """ Get song length """    passdef getSongPos(*args, **kwargs):    """ Get song position """    passdef getSongPosHint(*args, **kwargs):    """ Get song position hint """    passdef globalTransport(*args, **kwargs):    """ Global transport """    passdef isPlaying(*args, **kwargs):    """ Returns if the program is playing or stopped """    passdef isRecording(*args, **kwargs):    """ Get recording state """    passdef markerJumpJog(*args, **kwargs):    """ Jog marker jump """    passdef markerSelJog(*args, **kwargs):    """ Jog marker selection """    passdef record(*args, **kwargs):    """ Start recording """    passdef rewind(*args, **kwargs):    """ Rewind song """    passdef setLoopMode(*args, **kwargs):    """ Set loop mode """    passdef setPlaybackSpeed(*args, **kwargs):    """ Set playback speed """    passdef setSongPos(*args, **kwargs):    """ Set song position """    passdef start(*args, **kwargs):    """ Start playback """    passdef stop(*args, **kwargs):    """ Stop playback """    passversion = 1.0# device.pydef baseTrackSelect(*args, **kwargs):    """ Base track select """    passdef createRefreshThread(*args, **kwargs):    """ Create refresh thread """    passdef destroyRefreshThread(*args, **kwargs):    """ Destroy refresh thread """    passdef directFeedback(*args, **kwargs):    """ Send out generic midi message """    passdef dispatch(*args, **kwargs):    """ Dispatch midi message """    passdef dispatchGetReceiverPortNumber(*args, **kwargs):    """ Get receiver port number """    passdef dispatchReceiverCount(*args, **kwargs):    """ Get dispatch midi message receiver count """    passdef findEventID(*args, **kwargs):    """ Find event id """    passdef forwardMIDICC(*args, **kwargs):    """ Send  generic midi message to active plugin """    passdef fullRefresh(*args, **kwargs):    """ Perform full refresh """    passdef getIdleElapsed(*args, **kwargs):    """ Get idle elapsed  """    passdef getLinkedInfo(*args, **kwargs):    """ Get linked control info back or -1 if not linked """    passdef getLinkedValue(*args, **kwargs):    """ Get normalized value of linked control back or -1 if not linked """    passdef getName(*args, **kwargs):    """ Get device name """    passdef getPortNumber(*args, **kwargs):    """ Is device assigned """    passdef hardwareRefreshMixerTrack(*args, **kwargs):    """ Hardware refresh mixer track """    passdef isAssigned(*args, **kwargs):    """ Is device assigned """    passdef isDoubleClick(*args, **kwargs):    """ Double-clicking handling for MIDI """    passdef isMidiOutAssigned(*args, **kwargs):    """ Is device midi out assigned """    passdef midiOutMsg(*args, **kwargs):    """ Send out midi message """    passdef midiOutNewMsg(*args, **kwargs):    """ Send out new midi message """    passdef midiOutSysex(*args, **kwargs):    """ Send midi out sysex """    passdef processMIDICC(*args, **kwargs):    """ Send out generic midi message """    passdef repeatMidiEvent(*args, **kwargs):    """ Repeat midi event """    passdef sendMsgGeneric(*args, **kwargs):    """ Send out generic midi message """    passdef setHasMeters(*args, **kwargs):    """ Set has meters """    passdef stopRepeatMidiEvent(*args, **kwargs):    """ stop repeat midi event """    passversion = 1.0# plugins.pydef getParamCount(*args, **kwargs):    """ Get plugin parameter count """    passdef getParamName(*args, **kwargs):    """ Get plugin parameter name """    passdef getParamValue(*args, **kwargs):    """ Get plugin parameter value """    passdef getParamValueString(*args, **kwargs):    """ Get plugin parameter value string """    passdef getPluginName(*args, **kwargs):    """ Get plugin name """    passdef isValid(*args, **kwargs):    """ Get plugin validity """    passdef setParamValue(*args, **kwargs):    """ Set plugin parameter value """    passversion = 1.0# general.pydef getChangedFlag(*args, **kwargs):    """ Get changed flag  """    passdef getPrecount(*args, **kwargs):    """ Get precounr """    passdef getRecPPB(*args, **kwargs):    """ Get rec ppb """    passdef getRecPPQ(*args, **kwargs):    """ Get rec ppq """    passdef getUndoHistoryCount(*args, **kwargs):    """ Get undo history count """    passdef getUndoHistoryLast(*args, **kwargs):    """ Get undo history last """    passdef getUndoHistoryPos(*args, **kwargs):    """ Get undo history position """    passdef getUndoLevelHint(*args, **kwargs):    """ Get undo level """    passdef getUseMetronome(*args, **kwargs):    """ Get use metronome """    passdef getVersion(*args, **kwargs):    """ Get Midi scripting version """    passdef processRECEvent(*args, **kwargs):    """ Process rec event """    passdef restoreUndo(*args, **kwargs):    """ Restore undo """    passdef restoreUndoLevel(*args, **kwargs):    """ Restore undo by level """    passdef saveUndo(*args, **kwargs):    """ Save undo """    passdef setUndoHistoryCount(*args, **kwargs):    """ Set undo history count """    passdef setUndoHistoryLast(*args, **kwargs):    """ Set undo history last """    passdef setUndoHistoryPos(*args, **kwargs):    """ Set undo history position """    passdef undo(*args, **kwargs):    """ Undo/redo last, or move down in undo history """    passdef undoDown(*args, **kwargs):    """ Move down in undo history  """    passdef undoUp(*args, **kwargs):    """ Move up in undo history  """    passdef undoUpDown(*args, **kwargs):    """ Move up and down in undo history """    passversion = 1.0# launchMapPages.pydef checkMapForHiddenItem(*args, **kwargs):    """ Check for launchpad hidden item """    passdef createOverlayMap(*args, **kwargs):    """ Create overlay map """    passdef getMapCount(*args, **kwargs):    """ Get launchmap items length """    passdef getMapItemAftertouch(*args, **kwargs):    """ Get launchmap item aftertouch """    passdef getMapItemChannel(*args, **kwargs):    """ Get launchmap item destination channel """    passdef getMapItemColor(*args, **kwargs):    """ Get launchmap item color """    passdef init(*args, **kwargs):    """ Init launchmap pages """    passdef length(*args, **kwargs):    """ Get launchmap pages length """    passdef processMapItem(*args, **kwargs):    """ Process map item """    passdef releaseMapItem(*args, **kwargs):    """ Release map item """    passdef setMapItemTarget(*args, **kwargs):    """ Set map item destination target """    passdef updateMap(*args, **kwargs):    """ Update launchmap page """    passversion = 1.0

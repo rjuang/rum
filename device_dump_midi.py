@@ -4,6 +4,7 @@ from daw import flstudio
 
 import playlist
 import channels
+import midi
 import mixer
 import patterns
 import arrangement
@@ -21,6 +22,7 @@ def dump_api():
     modules = [
         playlist,
         channels,
+        midi,
         mixer,
         patterns,
         arrangement,

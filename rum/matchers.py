@@ -2,11 +2,30 @@
 from rum.midi import Midi
 
 
-def midi_eq(status, data1, data2):
-    """ Returns a function that matches to messages with the provided args. """
-    return lambda m: (m.status == status and
-                      m.data1 == data1 and
-                      m.data2 == data2)
+def midi_has(status=None, data1=None, data2=None,
+             status_range=None, data1_range=None, data2_range=None,
+             status_in=None, data1_in=None, data2_in=None):
+    """ Returns a function that matches to messages with the provided args.
+
+    If None is specified, then that argument is not matched against. If one
+    of the *_range keywords is specified, then the requirement is for that
+    data field of the midi message to fall within the range specified inclusive.
+    If one of the *_in keywords is specified, then the requirement is for
+    that data field of the midi message to be one of the elements of the
+    list/tuple specified.
+    """
+    return lambda m: ((status is None or m.status == status) and
+                      (data1 is None or m.data1 == data1) and
+                      (data2 is None or m.data2 == data2) and
+                      (status_range is None or
+                       status_range[0] <= m.status <= status_range[1]) and
+                      (data1_range is None or
+                       data1_range[0] <= m.data1 <= data1_range[1]) and
+                      (data2_range is None or
+                       data2_range[0] <= m.data2 <= data2_range[1]) and
+                      (status_in is None or m.status in status_in) and
+                      (data1_in is None or m.data1 in data1_in) and
+                      (data2_in is None or m.data2 in data2_in))
 
 
 def note_on():
