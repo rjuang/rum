@@ -1,7 +1,6 @@
 # name=RUM Novation Launchkey Mini Mk3 MIDI
 # url=https://github.com/rjuang/rum
 # receiveFrom=RUM Novation Launchkey Mini Mk3 DAW
-
 from daw import flstudio
 from device_profile.novation import LaunchkeyMk3
 from rum import matchers, scheduling
@@ -9,7 +8,7 @@ from rum.midi import MidiMessage, Midi
 from rum.matchers import masked_status_eq
 from rum.processor import trigger_when
 from rum.recorder import Recorder
-from daw.flstudio import ChannelRack, register
+from daw.flstudio import ChannelRack, register, Transport
 
 DEBUG = True
 
@@ -43,46 +42,99 @@ class Device:
         self.note_down = set()
         self.recorder = Recorder(scheduling.get_scheduler(),
                                  playback_fn=play_note)
+        self.play_pad_press = None
+        self.stop_pad_press = None
+
+    def mark_pressed(self, note):
+        self.note_down.add(note)
+
+    def mark_released(self, note):
+        self.note_down.remove(note)
+
+    def is_pressed(self, note):
+        return note in self.note_down
+
+    def is_pad_recording(self):
+        return self.recorder.is_recording()
+
+    def start_pad_recording(self, msg: MidiMessage):
+        request_blink_led(msg.data1, 0x05)
+        self.recorder.start_recording((msg.status, msg.data1))
+
+    def stop_pad_recording(self):
+        request_set_led(self.recorder.get_recording_pattern_id()[1], 0)
+        self.recorder.stop_recording()
+
+    def play_pad_pattern(self, msg: MidiMessage, loop=False, loop_delay_ms=0):
+        return self.recorder.play((msg.status, msg.data1), loop=loop,
+                                  loop_delay_ms=loop_delay_ms)
 
 
 _device = Device()
 
 
 @trigger_when(LaunchkeyMk3.IS_RECORD_BUTTON)
-def on_record_button_event(msg: MidiMessage):
+def on_record_button(msg: MidiMessage):
     if matchers.IS_ON(msg):
-        _device.note_down.add('record')
+        _device.mark_pressed('record')
+        if _device.is_pad_recording():
+            _device.stop_pad_recording()
     else:
-        _device.note_down.remove('record')
+        _device.mark_released('record')
+        if not _device.is_pad_recording():
+            print('TODO: Transport.record')
     msg.mark_handled()
 
 
-@trigger_when(
-    lambda _: 'record' in _device.note_down,        # Record button held
-    lambda _: not _device.recorder.is_recording(),  # Not actively recording pad
-    LaunchkeyMk3.IS_DRUM_PAD_DOWN                   # Is a drum pad press.
-)
-def start_recording_pad(msg: MidiMessage):
-    request_blink_led(msg.data1, 0x05)
-    _device.recorder.start_recording((msg.status, msg.data1))
-    msg.mark_handled()
+@trigger_when(LaunchkeyMk3.IS_PLAY_BUTTON)
+def on_play_button(msg: MidiMessage):
+    if matchers.IS_ON(msg):
+        _device.mark_pressed('play')
+        _device.play_pad_press = None
+    else:
+        _device.mark_released('play')
+        if _device.play_pad_press is None:
+            Transport.toggle_play()
 
 
-@trigger_when(LaunchkeyMk3.IS_RECORD_BUTTON, matchers.IS_ON)
-def stop_recording_pad(msg: MidiMessage):
-    if _device.recorder.is_recording():
-        request_set_led(_device.recorder.get_recording_pattern_id()[1], 0)
-        _device.recorder.stop_recording()
-    msg.mark_handled()
+@trigger_when(LaunchkeyMk3.IS_PAGE_DOWN_BUTTON)
+def on_stop_button(msg: MidiMessage):
+    if matchers.IS_ON(msg):
+        _device.mark_pressed('stop')
+    else:
+        _device.mark_released('stop')
+        if _device.recorder.is_recording():
+            _device.stop_pad_recording()
+        else:
+            _device.recorder.stop_all()
+        Transport.stop()
 
 
-@trigger_when(
-    lambda _: 'record' not in _device.note_down,
-    lambda _: not _device.recorder.is_recording(),
-    LaunchkeyMk3.IS_DRUM_PAD_DOWN)
-def recall_pad_pattern(msg: MidiMessage):
-    if _device.recorder.play((msg.status, msg.data1)):
-        msg.mark_handled()
+@trigger_when(LaunchkeyMk3.IS_PAGE_UP_BUTTON)
+def on_page_up_button(msg: MidiMessage):
+    if matchers.IS_ON(msg):
+        _device.mark_pressed('>')
+    else:
+        _device.mark_released('>')
+
+
+@trigger_when(LaunchkeyMk3.IS_DRUM_PAD)
+def on_drum_pad(msg: MidiMessage):
+    if msg.get_masked_status() == Midi.STATUS_NOTE_ON:
+        if _device.is_pressed('record') and not _device.is_pad_recording():
+            _device.start_pad_recording(msg)
+            msg.mark_handled()
+        elif _device.is_pressed('>'):
+            chan = LaunchkeyMk3.CHANNEL_MAP[msg.data1]
+            if chan < ChannelRack.num_channels():
+                ChannelRack.set_active_channel(chan)
+            msg.mark_handled()
+        elif (not _device.is_pressed('record') and
+              not _device.is_pad_recording()):
+            loop = _device.is_pressed('play')
+            if _device.recorder.play((msg.status, msg.data1), loop=loop):
+                _device.play_pad_press = (msg.status, msg.data1)
+                msg.mark_handled()
 
 
 @trigger_when(masked_status_eq(Midi.STATUS_NOTE_ON))

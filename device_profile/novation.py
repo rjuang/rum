@@ -1,6 +1,6 @@
 from device_profile.command import MidiCommandBuilder
 from rum.matchers import require_all, masked_status_eq, data1_eq, note_on, \
-    channel_eq, note_off
+    channel_eq, note_off, data1_in_range
 
 
 class LaunchkeyMk3(MidiCommandBuilder):
@@ -27,12 +27,19 @@ class LaunchkeyMk3(MidiCommandBuilder):
     DRUM_PAD_IDS = [[0x28, 0x29, 0x2A, 0x2B, 0x30, 0x31, 0x32, 0x33],
                     [0x24, 0x25, 0x26, 0x27, 0x2C, 0x2D, 0x2E, 0x2F]]
 
+    # Mapping of the channel index the buttons map to.
+    CHANNEL_MAP = {pad_id: idx for idx, pad_id in
+                   enumerate(DRUM_PAD_IDS[0] + DRUM_PAD_IDS[1])}
+
     DRUM_PAD_MIDI_CHANNEL = 9   # corresponds to channel 10
 
     # Various matchers
     IS_RECORD_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x75))
-    IS_DRUM_PAD_DOWN = require_all(note_on(), channel_eq(DRUM_PAD_MIDI_CHANNEL))
-    IS_DRUM_PAD_UP = require_all(note_off(), channel_eq(DRUM_PAD_MIDI_CHANNEL))
+    IS_PLAY_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x73))
+    IS_PAGE_UP_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x68))
+    IS_PAGE_DOWN_BUTTON = require_all(masked_status_eq(0xB0), data1_eq(0x69))
+    IS_DRUM_PAD = require_all(channel_eq(DRUM_PAD_MIDI_CHANNEL),
+                              data1_in_range(0x24, 0x33))
 
     @staticmethod
     def new_command():

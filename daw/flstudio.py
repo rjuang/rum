@@ -22,9 +22,11 @@ components.
 
 import channels
 import device
+import midi
+import transport
 
 import rum.processor
-from rum import scheduling, midi
+from rum import scheduling
 
 
 class ChannelRack:
@@ -55,7 +57,7 @@ class Midi:
     @staticmethod
     def to_midi_message(event: 'eventData'):
         """ Convert an FL Studio eventData midi message to MidiMessage. """
-        return midi.MidiMessage(event.status, event.data1, event.data2)
+        return rum.midi.MidiMessage(event.status, event.data1, event.data2)
 
 
 class Device:
@@ -75,6 +77,16 @@ class Device:
         for i in range(device.dispatchReceiverCount()):
             msg = status + (data1 << 8) + (data2 << 16)
             device.dispatch(i, msg)
+
+
+class Transport:
+    @staticmethod
+    def stop():
+        transport.stop()
+
+    @staticmethod
+    def toggle_play():
+        transport.globalTransport(midi.FPT_Play, midi.FPT_Play)
 
 
 def register(function):
