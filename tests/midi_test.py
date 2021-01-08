@@ -1,7 +1,9 @@
 import sys
 import unittest
 
+
 sys.path.insert(0, '..')
+from rum import midi
 from rum.midi import MidiMessage
 from rum.processor import MidiProcessor, when
 from rum.matchers import data1_eq, status_eq
@@ -62,9 +64,20 @@ class MidiProcessorTests(unittest.TestCase):
          .process(self._msg))
         self.assertEqual(2, self._trigger_count)
 
-
-# TODO: Add tests for get_encoder_values
-
+    def test_getEncoderValueMinMax_returnsMinMaxOfOutput(self):
+        self.assertEqual(0, midi.get_encoder_value(MidiMessage(0xB0, 0x05, 0)))
+        self.assertEqual(1.0, midi.get_encoder_value(
+            MidiMessage(0xB0, 0x05, 0x7F)))
+        self.assertAlmostEqual(
+            50.0,
+            midi.get_encoder_value(
+                MidiMessage(0xB0, 0x05, 0), range=(50.0, 100.0)),
+            places=4)
+        self.assertAlmostEqual(
+            100.0,
+            midi.get_encoder_value(
+                MidiMessage(0xB0, 0x05, 0x7F), range=(50.0, 100.0)),
+            places=4)
 
 
 if __name__ == '__main__':

@@ -663,6 +663,48 @@ class RecorderTests(unittest.TestCase):
             [1, 11, 3, 13, 5, 15, 7, 17, 9, 19, 1, 11, 3, 13]],
             odd_history)
 
-    # TODO: Add tests for set_loop_delay
+    def test_updateLoopDelayWhilePlaying_loopDelayUpdated(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self.assertEqual(True, result)
+
+        # Make sure notes are played back correctly in time.
+        history = []
+
+        self._scheduler.idle()
+        history.append(self._data_played[:])
+
+        for i in range(11):
+            # Each step is 1 second
+            if i == 4:
+                self._recorder.set_loop_delay('even', 2000)
+
+            self._clock.advance(1)
+            self._scheduler.idle()
+            history.append(self._data_played[:])
+
+        self.assertEqual([
+            [0, 10],           # Before loop, first idle call
+            [0, 10, 2, 12],    # Loop 0
+            [0, 10, 2, 12, 4, 14],
+            [0, 10, 2, 12, 4, 14, 6, 16],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18],         # w/ loop delay
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16, 8,
+                18],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16, 8,
+             18],  # Due to change in delay to 2 seconds
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16, 8,
+             18, 0, 10]],
+            history)
+
+
 if __name__ == '__main__':
     unittest.main()
