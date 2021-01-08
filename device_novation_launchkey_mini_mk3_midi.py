@@ -6,10 +6,10 @@ import mixer
 from daw import flstudio
 from daw.flstudio import ChannelRack, register, Transport, MixerPanel
 from device_profile.novation import LaunchkeyMk3
-from rum import matchers, scheduling, midi
-from rum.matchers import midi_has
+from rum import matchers, scheduling, midi, registry
+from rum.matchers import midi_has, require_all
 from rum.midi import MidiMessage, Midi
-from rum.decorators import trigger_when
+from rum.decorators import trigger_when, encoder, button
 from rum.recorder import Recorder
 
 DEBUG = True
@@ -49,15 +49,6 @@ class Device:
         self.last_loop = None
         self.current_loop_delay_ms = 0
 
-    def mark_pressed(self, note):
-        self.note_down.add(note)
-
-    def mark_released(self, note):
-        self.note_down.remove(note)
-
-    def is_pressed(self, note):
-        return note in self.note_down
-
     def is_pad_recording(self):
         return self.recorder.is_recording()
 
@@ -79,36 +70,35 @@ class Device:
 _device = Device()
 
 
-@trigger_when(LaunchkeyMk3.IS_RECORD_BUTTON)
-def on_record_button(msg: MidiMessage):
-    if matchers.IS_ON(msg):
-        _device.mark_pressed('record')
+@button('record',
+        require_all(LaunchkeyMk3.IS_RECORD_BUTTON, matchers.IS_ON),
+        require_all(LaunchkeyMk3.IS_RECORD_BUTTON, matchers.IS_OFF))
+def on_record_button(msg: MidiMessage, pressed):
+    if pressed:
         if _device.is_pad_recording():
             _device.stop_pad_recording()
     else:
-        _device.mark_released('record')
         if not _device.is_pad_recording():
             Transport.record()
     msg.mark_handled()
 
 
-@trigger_when(LaunchkeyMk3.IS_PLAY_BUTTON)
-def on_play_button(msg: MidiMessage):
-    if matchers.IS_ON(msg):
-        _device.mark_pressed('play')
+@button('play',
+        require_all(LaunchkeyMk3.IS_PLAY_BUTTON, matchers.IS_ON),
+        require_all(LaunchkeyMk3.IS_PLAY_BUTTON, matchers.IS_OFF))
+def on_play_button(msg: MidiMessage, pressed):
+    if pressed:
         _device.play_pad_press = None
     else:
-        _device.mark_released('play')
         if _device.play_pad_press is None:
             Transport.toggle_play()
 
 
-@trigger_when(LaunchkeyMk3.IS_PAGE_DOWN_BUTTON)
-def on_stop_button(msg: MidiMessage):
-    if matchers.IS_ON(msg):
-        _device.mark_pressed('stop')
-    else:
-        _device.mark_released('stop')
+@button('stop',
+        require_all(LaunchkeyMk3.IS_PAGE_DOWN_BUTTON, matchers.IS_ON),
+        require_all(LaunchkeyMk3.IS_PAGE_DOWN_BUTTON, matchers.IS_OFF))
+def on_stop_button(msg: MidiMessage, pressed):
+    if not pressed:
         if _device.recorder.is_recording():
             _device.stop_pad_recording()
         else:
@@ -116,28 +106,27 @@ def on_stop_button(msg: MidiMessage):
         Transport.stop()
 
 
-@trigger_when(LaunchkeyMk3.IS_PAGE_UP_BUTTON)
-def on_page_up_button(msg: MidiMessage):
-    if matchers.IS_ON(msg):
-        _device.mark_pressed('>')
-    else:
-        _device.mark_released('>')
+@button('>',
+        require_all(LaunchkeyMk3.IS_PAGE_UP_BUTTON, matchers.IS_ON),
+        require_all(LaunchkeyMk3.IS_PAGE_UP_BUTTON, matchers.IS_OFF))
+def on_page_up_button(msg: MidiMessage, pressed):
+    pass
 
 
 @trigger_when(LaunchkeyMk3.IS_DRUM_PAD)
 def on_drum_pad(msg: MidiMessage):
     if msg.get_masked_status() == Midi.STATUS_NOTE_ON:
-        if _device.is_pressed('record') and not _device.is_pad_recording():
+        if registry.button_down['record'] and not  _device.is_pad_recording():
             _device.start_pad_recording(msg)
             msg.mark_handled()
-        elif _device.is_pressed('>'):
+        elif registry.button_down['>']:
             chan = LaunchkeyMk3.CHANNEL_MAP[msg.data1]
             if chan < ChannelRack.num_channels():
                 ChannelRack.set_active_channel(chan)
             msg.mark_handled()
-        elif (not _device.is_pressed('record') and
+        elif (not registry.button_down['record'] and
               not _device.is_pad_recording()):
-            loop = _device.is_pressed('play')
+            loop = registry.button_down['play']
             if _device.play_pad_pattern(msg, loop=loop):
                 _device.play_pad_press = (msg.status, msg.data1)
                 msg.mark_handled()
@@ -155,25 +144,64 @@ def on_note_down(msg: MidiMessage):
     _device.recorder.on_data_event(msg.timestamp_ms, msg)
 
 
-@trigger_when(midi_has(status_range=(0xB0, 0xB9),
-                       data1_in=LaunchkeyMk3.ENCODER_IDS))
-def on_encoder_turned(msg: MidiMessage):
-    chan = msg.get_channel()
-    encoder_idx = LaunchkeyMk3.ENCODER_MAP[msg.data1]
-    value = midi.get_encoded_value(msg)
+# #############################################################################
+#                             ENCODERS   1 - 8
+# #############################################################################
+@encoder('encoder1',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[0]))
+def on_encoder1(msg: MidiMessage, value):
+    # Set master volume to 0
+    MixerPanel.set_track_volume(0, value)
+    msg.mark_handled()
 
-    if encoder_idx == 0:
-        MixerPanel.set_track_volume(encoder_idx, value)
-    elif encoder_idx == 7:
-        bpm = mixer.getCurrentTempo() / 1000
-        quarter_beat_interval_ms = 15000 / bpm
-        # Allow adjustment by quarter of a beat
-        selection = [(i + 1) * quarter_beat_interval_ms for i in range(16)]
-        idx = int(round((len(selection) - 1) * value))
-        if _device.last_loop is not None:
-            _device.recorder.set_loop_delay(_device.last_loop, selection[idx])
-            _device.current_loop_delay_ms = selection[idx]
 
+@encoder('encoder2',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[1]))
+def on_encoder2(msg: MidiMessage, value):
+    pass
+
+
+@encoder('encoder3',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[2]))
+def on_encoder3(msg: MidiMessage, value):
+    pass
+
+
+@encoder('encoder4',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[3]))
+def on_encoder4(msg: MidiMessage, value):
+    pass
+
+
+@encoder('encoder5',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[4]))
+def on_encoder5(msg: MidiMessage, value):
+    pass
+
+
+@encoder('encoder6',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[5]))
+def on_encoder6(msg: MidiMessage, value):
+    pass
+
+
+@encoder('encoder7',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[6]))
+def on_encoder7(msg: MidiMessage, value):
+    pass
+
+
+@encoder('encoder8',
+         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[7]))
+def on_encoder8(msg: MidiMessage, value):
+    bpm = mixer.getCurrentTempo() / 1000
+    quarter_beat_interval_ms = 15000 / bpm
+    # Allow adjustment by quarter of a beat
+    selection = [(i + 1) * quarter_beat_interval_ms for i in range(16)]
+    idx = int(round((len(selection) - 1) * value))
+    if _device.last_loop is not None:
+        _device.recorder.set_loop_delay(_device.last_loop, selection[idx])
+        _device.current_loop_delay_ms = selection[idx]
 
 
 @register
