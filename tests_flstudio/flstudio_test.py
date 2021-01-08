@@ -13,7 +13,7 @@ from daw import flstudio
 from daw.flstudio import register
 from rum import scheduling, matchers
 from rum.midi import MidiMessage
-from rum.processor import trigger_when
+from rum.decorators import trigger_when
 from rum.scheduling import Scheduler
 from tests import testutils
 

@@ -3,10 +3,9 @@ import unittest
 
 sys.path.insert(0, '..')
 
-from rum import processor
 from rum.matchers import status_eq, data1_eq
 from rum.midi import MidiMessage
-from rum.processor import MidiProcessor, When, WhenAll, WhenAny, trigger_when
+from rum.processor import MidiProcessor, When, WhenAll, WhenAny
 
 
 class MidiProcessorTest(unittest.TestCase):
@@ -128,30 +127,6 @@ class WhenAnyTest(unittest.TestCase):
         process = WhenAny(status_eq(34), data1_eq(1)).then(dispatch)
         m = MidiMessage(33, 1, 1)
         process(m)
-        self.assertEqual([m], self._received)
-
-
-class TriggerWhenTest(unittest.TestCase):
-    def test_triggerWhenPassAndFailCondition_doesNotCallOnProcess(self):
-        self._received = []
-
-        @trigger_when(status_eq(128), data1_eq(1))
-        def dispatch(m):
-            self._received.append(m)
-
-        m = MidiMessage(128, 0, 2)
-        processor.get_processor().process(m)
-        self.assertEqual([], self._received)
-
-    def test_triggerWhenAllPass_callsFunctionOnProcess(self):
-        self._received = []
-
-        @trigger_when(status_eq(128), data1_eq(1))
-        def dispatch(m):
-            self._received.append(m)
-
-        m = MidiMessage(128, 1, 2)
-        processor.get_processor().process(m)
         self.assertEqual([m], self._received)
 
 

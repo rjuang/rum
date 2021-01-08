@@ -66,7 +66,8 @@ def mark_handled(msg: MidiMessage):
     msg.mark_handled()
 
 
-def get_encoder_value(msg: MidiMessage, max_val=0x7F, range=(0.0, 1.0)):
+def get_encoded_value(msg: MidiMessage, max_val=0x7F, range=(0.0, 1.0),
+                      differential=False):
     """  Retrieve the encoder value (data2) and remap result to a given range.
 
     This function assumes the msg provided is associated with an encoder. It
@@ -75,7 +76,17 @@ def get_encoder_value(msg: MidiMessage, max_val=0x7F, range=(0.0, 1.0)):
 
     :param msg: the msg to retrieve the encoder value from
     :param range: the range to map the values to inclusive (default (0.0, 1.0)
+    :param differential: set to True if the encoded value represents a
+    differential value (+/- delta value)
     :return: the encoder value in the mapped range as a float.
     """
-    return msg.data2 / float(max_val) * float(range[1] - range[0]) + float(
+    if differential:
+        sign = 1
+        if 0b1000000 & msg.data2 > 0:
+            sign = -1
+        return float(sign * (msg.data2 & 0b111111)) / max_val * (range[1] -
+                                                                 range[0])
+    else:
+        return msg.data2 / float(max_val) * float(range[1] - range[0]) + float(
         range[0])
+

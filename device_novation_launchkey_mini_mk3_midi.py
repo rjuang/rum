@@ -9,7 +9,7 @@ from device_profile.novation import LaunchkeyMk3
 from rum import matchers, scheduling, midi
 from rum.matchers import midi_has
 from rum.midi import MidiMessage, Midi
-from rum.processor import trigger_when
+from rum.decorators import trigger_when
 from rum.recorder import Recorder
 
 DEBUG = True
@@ -160,7 +160,7 @@ def on_note_down(msg: MidiMessage):
 def on_encoder_turned(msg: MidiMessage):
     chan = msg.get_channel()
     encoder_idx = LaunchkeyMk3.ENCODER_MAP[msg.data1]
-    value = midi.get_encoder_value(msg)
+    value = midi.get_encoded_value(msg)
 
     if encoder_idx == 0:
         MixerPanel.set_track_volume(encoder_idx, value)

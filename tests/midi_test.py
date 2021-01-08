@@ -65,19 +65,33 @@ class MidiProcessorTests(unittest.TestCase):
         self.assertEqual(2, self._trigger_count)
 
     def test_getEncoderValueMinMax_returnsMinMaxOfOutput(self):
-        self.assertEqual(0, midi.get_encoder_value(MidiMessage(0xB0, 0x05, 0)))
-        self.assertEqual(1.0, midi.get_encoder_value(
+        self.assertEqual(0, midi.get_encoded_value(MidiMessage(0xB0, 0x05, 0)))
+        self.assertEqual(1.0, midi.get_encoded_value(
             MidiMessage(0xB0, 0x05, 0x7F)))
         self.assertAlmostEqual(
             50.0,
-            midi.get_encoder_value(
+            midi.get_encoded_value(
                 MidiMessage(0xB0, 0x05, 0), range=(50.0, 100.0)),
             places=4)
         self.assertAlmostEqual(
             100.0,
-            midi.get_encoder_value(
+            midi.get_encoded_value(
                 MidiMessage(0xB0, 0x05, 0x7F), range=(50.0, 100.0)),
             places=4)
+
+    def test_getDifferentialEncoderValue_returnsDifferentialOutput(self):
+        self.assertAlmostEqual(
+            2.0 / 127.0,
+            midi.get_encoded_value(
+                MidiMessage(0xB0, 0x10, 0x02),
+                differential=True),
+            5)
+        self.assertAlmostEqual(
+            -2.0 / 127.0,
+            midi.get_encoded_value(
+                MidiMessage(0xB0, 0x10, 0x42),
+                differential=True),
+            5)
 
 
 if __name__ == '__main__':

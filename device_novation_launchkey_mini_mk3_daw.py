@@ -6,7 +6,7 @@ from daw.flstudio import register
 from device_profile.novation import LaunchkeyMk3
 from rum.matchers import midi_has
 from rum.midi import MidiMessage
-from rum.processor import trigger_when
+from rum.decorators import trigger_when
 
 
 @trigger_when(midi_has(status=LaunchkeyMk3.SOLID_LED_STATUS_CMD))

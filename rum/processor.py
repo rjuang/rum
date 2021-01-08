@@ -96,35 +96,3 @@ class WhenAny(When):
 when = WhenAll
 when_all = WhenAll
 when_any = WhenAny
-
-
-def trigger_when(*var_matchers):
-    """ Register the function this is decorating with the midi processor.
-
-    An example usage of this annotation is as follows:
-
-      @TriggerWhen(matchers.status_eq(128), matchers.data1_eq(10))
-      def on_button1_down(m: MidiMessage):
-          # Do something when this is triggered
-
-    This will register on_button1_down such that it gets executed when
-    a midi message with status equal to 128 and data1 field equal to 10
-    triggers.
-
-    NOTE: The functions that can be annotated cannot be within a class (i.e.
-    there cannot be a self argument). Also the declared function can only
-    receive a single element of MidiMessage. If you need to access other state,
-    consider declaring a global state variable that holds what you need.
-
-    :param var_matchers:  a variable list of matchers to midi messages that
-    returns True if the trigger condition is met or False if not.
-    """
-    def decorate(function):
-        # Register the function with a default active processor.
-        _active_processor.add(when(*var_matchers).then(function))
-
-        def decorated_function(*args, **kwargs):
-            return function(*args, **kwargs)
-        return decorated_function
-
-    return decorate
