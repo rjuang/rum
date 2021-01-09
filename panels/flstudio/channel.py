@@ -1,6 +1,6 @@
 """ Components for controlling then channel rack. """
 from daw import flstudio
-from panels.flstudio.abstract import Panel
+from panels.abstract import Panel
 from rum.midi import MidiMessage
 
 # Last constructed channel selector. There should only ever by 1 channel
@@ -8,7 +8,7 @@ from rum.midi import MidiMessage
 _last_channel_selector = None
 
 
-def active_channel_selector():
+def get_channel_selector():
     """ Returns the last channel selector created. """
     return _last_channel_selector
 
@@ -50,9 +50,8 @@ class ChannelSelector(Panel):
         self._matchers = button_matchers
         self._base_index = 0
         self._output_fn = output_fn
-
-        if attached:
-            self.attach()
+        self._attached = attached
+        self._last_msg = None
 
         global _last_channel_selector
         _last_channel_selector = self
@@ -74,8 +73,25 @@ class ChannelSelector(Panel):
                 if channel_idx >= flstudio.ChannelRack.num_channels():
                     return
                 flstudio.ChannelRack.set_active_channel(channel_idx)
-                self._output_fn(msg, idx, channel_idx)
+                # Note: We are always guaranteed an FL Studio refresh when
+                # this propagates. Lighting and output will be handled on the
+                # refresh call so that we don't double call.
                 return
 
-    def _init_decorator(self, fn):
+    def _decorate(self, fn):
         self._output_fn = fn
+        if self._attached:
+            self._refresh()
+        return fn
+
+    def _refresh(self, flags=0):
+        if (flags & flstudio.REFRESH_FOCUSED_WINDOW) == 0:
+            return
+        channel_idx = flstudio.ChannelRack.active_channel()
+        button_idx = channel_idx - self._base_index
+
+        if button_idx < 0 or button_idx >= len(self._matchers):
+            # Don't set an index if no mapping to a button
+            button_idx = None
+        if self._output_fn is not None:
+            self._output_fn(button_idx, channel_idx)

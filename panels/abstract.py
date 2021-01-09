@@ -1,4 +1,4 @@
-from rum import processor
+from rum import processor, autorefresh
 from rum.midi import MidiMessage
 
 
@@ -25,11 +25,12 @@ class Panel:
 
     """
     def __init__(self):
-        self._attached = False
+        self._attached = True
 
     def attach(self):
         """ Put the panel in an attached state so messages are processed. """
         self._attached = True
+        self.refresh()
 
     def detach(self):
         """ Put the panel in a detached state so messages are dropped. """
@@ -43,18 +44,53 @@ class Panel:
     def register(self):
         """ Register this panel with the global processor. """
         processor.get_processor().add(self.process)
+        autorefresh.get_refresh_manager().add(self.refresh)
 
-    def _process_message(self, msg: MidiMessage):
+    def refresh(self, flags=autorefresh.FULL_REFRESH):
+        """ Manually trigger a refresh (ignored if panel detached).
+
+        :param flags specify a flag that is checked on to see if a refresh is
+        needed required (defaults to full refresh so that refresh always
+        called). The bits of the flag determines whether the refresh call
+        will trigger an actual refresh. The meaning of the bits is DAW
+        dependent.
+        """
+        if self._attached:
+            self._refresh(flags)
+
+    def _refresh(self, flags):
+        """ Called when the outputs need to be re-drawn.
+
+        :param flags specifies what components need to be refreshed. The
+        value of the flags is DAW dependent.
+        """
         raise NotImplementedError()
 
-    def _init_decorator(self, fn):
-        # Called when the decorator form of the class is used.
+    def _process_message(self, msg: MidiMessage):
+        """ Process the incoming message.
+
+        This is a method any panel needs to implement. It needs to check
+        whether the message matches any required conditions and executes any
+        task associated with the panel.
+        """
+        raise NotImplementedError()
+
+    def _decorate(self, fn):
+        """ Decorate the provided function.
+
+        When the class is constructed by a decorator, the function it is
+        decorating will be passed to this method. This method will return the
+        decorated function.
+
+        :param fn: the function to decorate.
+        :return the decorated function
+        """
         raise NotImplementedError()
 
     def __call__(self, fn):
         # Enable this class to be used as a decorator by having it set the
         # trigger function as the function defined below the decorator
         # and automatically registering the panel.
-        self._init_decorator(fn)
+        decorated_fn = self._decorate(fn)
         self.register()
-        return fn
+        return decorated_fn

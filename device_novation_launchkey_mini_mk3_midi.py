@@ -121,7 +121,7 @@ def is_page_up_held(msg: MidiMessage):
 @ChannelSelector([
     require_all(is_page_up_held, drum_pad_matcher)
     for drum_pad_matcher in LaunchkeyMk3.DRUM_PAD_DOWN_MATCHERS[0]])
-def on_channel_selected(msg: MidiMessage, button_idx, channel_idx):
+def on_channel_selected(button_idx, channel_idx):
     for idx, pad_id in enumerate(LaunchkeyMk3.DRUM_PAD_IDS[0]):
         if idx == button_idx:
             request_set_led(pad_id, 0x10)
@@ -210,9 +210,6 @@ def on_encoder8(msg: MidiMessage, value):
 @register
 def OnInit():
     print('Loaded RUM Device Novation Launchkey Mini MK3')
-    for row in LaunchkeyMk3.DRUM_PAD_IDS:
-        for led_id in row:
-            request_set_led(led_id, 0)
 
 
 @register
@@ -220,6 +217,17 @@ def OnIdle():
     # This function needs to be declared and registered for the framework to
     # work properly.
     pass
+
+@register
+def OnRefresh(flags):
+    if DEBUG:
+        print(f'Refreshed with {flags}')
+
+@register
+def OnDoFullRefresh():
+    if DEBUG:
+        print(f'Do full refresh')
+
 
 
 @register

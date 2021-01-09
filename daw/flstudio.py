@@ -27,7 +27,20 @@ import mixer
 import transport
 
 import rum.processor
-from rum import scheduling
+from rum import scheduling, autorefresh
+
+# Refresh flag constants that are one-hot encoded that represent refreshing
+# different portions of the midi controller. These correspond to the flags in
+# FL Studio (but with a different name).
+
+REFRESH_MIXER_SELECTION = 1
+REFRESH_MIXER_DISPLAY = 2
+REFRESH_MIXER_CONTROLS = 4
+REFRESH_REMOTE_LINKS = 16
+REFRESH_FOCUSED_WINDOW = 32
+REFRESH_PERFORMANCE = 64
+REFRESH_CONTROLLER_LEDS = 256
+REFRESH_REMOTE_LINKS = 512
 
 
 class ChannelRack:
@@ -117,9 +130,14 @@ def register(function):
     This will cause the corresponding method to be registered with the
     framework.
     """
-    def idle_function(*args, **kwargs):
+    def init_function():
+        # Force a full refresh when script attached.
+        autorefresh.get_refresh_manager().refresh(autorefresh.FULL_REFRESH)
+        return function()
+
+    def idle_function():
         scheduling.get_scheduler().idle()
-        return function(*args, **kwargs)
+        return function()
 
     def midi_msg_function(event_data):
         msg = Midi.to_midi_message(event_data)
@@ -128,10 +146,24 @@ def register(function):
             event_data.handled = True
         return function(event_data)
 
+    def refresh_function(flags):
+        autorefresh.get_refresh_manager().refresh(flags)
+        return function(flags)
+
+    def fullrefresh_function():
+        autorefresh.get_refresh_manager().refresh(autorefresh.FULL_REFRESH)
+        return function()
+
     if function.__name__ == 'OnIdle':
         return idle_function
     elif function.__name__ == 'OnMidiMsg':
         return midi_msg_function
+    elif function.__name__ == 'OnRefresh':
+        return refresh_function
+    elif function.__name__ == 'OnInit':
+        return init_function
+    elif function.__name__ == 'OnDoFullRefresh':
+        return fullrefresh_function
 
     # Default to the undecorated function if we don't care
     return function
