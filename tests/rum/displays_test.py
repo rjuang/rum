@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum.displays import DirectDisplay, DisplayWindow, ScrollingDisplay, \
     PagedDisplay
 from rum.scheduling import Scheduler

@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum.states import IterableState
 
 

@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum.lights import OnOffLight, ColorLight, ColorToggleLight
 
 

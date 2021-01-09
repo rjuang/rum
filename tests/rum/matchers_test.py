@@ -1,15 +1,11 @@
-import sys
 import unittest
 
-
-sys.path.insert(0, '..')
 from rum import matchers
-from rum.matchers import midi_has, status_eq, status_in, status_in_range, \
-    masked_status_eq, channel_eq, note_on, note_off
 from rum.matchers import data1_eq, data1_in, data1_in_range, data2_eq
 from rum.matchers import data2_in, data2_in_range, require_all, require_any
 from rum.matchers import is_not
-
+from rum.matchers import midi_has, status_eq, status_in, status_in_range, \
+    masked_status_eq, channel_eq, note_on, note_off
 from rum.midi import MidiMessage
 
 

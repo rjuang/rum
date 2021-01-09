@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum.controls import BlinkableLight, Metronome
 from rum.lights import OnOffLight
 from rum.scheduling import Scheduler

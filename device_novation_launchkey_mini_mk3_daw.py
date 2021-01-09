@@ -13,12 +13,14 @@ from rum.decorators import trigger_when
 def set_led_color(m: MidiMessage):
     msg = LaunchkeyMk3.new_command().light_color(m.data1, m.data2).build()
     flstudio.Device.send_sysex_message(msg)
+    m.mark_handled()
 
 
 @trigger_when(midi_has(status=LaunchkeyMk3.BLINK_LED_STATUS_CMD))
 def set_blinking_led(m: MidiMessage):
     msg = LaunchkeyMk3.new_command().blinking_light(m.data1, m.data2).build()
     flstudio.Device.send_sysex_message(msg)
+    m.mark_handled()
 
 
 @register

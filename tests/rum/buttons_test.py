@@ -1,11 +1,8 @@
-import sys
 import unittest
 
-
-sys.path.insert(0, '..')
 from rum.buttons import SimpleButton, ToggleStateButton
-from rum.states import IterableState
 from rum.scheduling import Scheduler
+from rum.states import IterableState
 from tests.testutils import FakeClock
 
 

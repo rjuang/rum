@@ -1,7 +1,4 @@
-import sys
 import unittest
-
-sys.path.insert(0, '..')
 
 from rum.matchers import status_eq, data1_eq
 from rum.midi import MidiMessage

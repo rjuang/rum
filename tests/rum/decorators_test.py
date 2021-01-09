@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum import processor, registry
 from rum.decorators import trigger_when, button, encoder, slider
 from rum.matchers import status_eq, data1_eq, midi_has

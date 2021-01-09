@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from device_profile.command import MidiCommandBuilder
 
 

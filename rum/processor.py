@@ -33,6 +33,10 @@ class MidiProcessor:
             self._processors.append(fn)
         return self
 
+    def clear(self):
+        """ Clears all processors. """
+        self._processors.clear()
+
     def process(self, message: MidiMessage):
         """ Process midi message by sending it to all processor functions. """
         for p in self._processors:

@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum.animations import BlinkingAnimation, SequentialAnimation
 from rum.lights import OnOffLight
 from rum.scheduling import Scheduler

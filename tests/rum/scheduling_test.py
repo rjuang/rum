@@ -1,7 +1,5 @@
-import sys
 import unittest
 
-sys.path.insert(0, '..')
 from rum.scheduling import Scheduler
 from tests.testutils import FakeClock
 

@@ -40,10 +40,26 @@ class LaunchkeyMk3(MidiCommandBuilder):
     IS_PAGE_DOWN_BUTTON = midi_has(status_range=(0xB0, 0xBF), data1=0x69)
     IS_DRUM_PAD = midi_has(status_in=[0x89, 0x99], data1_range=(0x24, 0x33))
 
+    DRUM_PAD_DOWN_MATCHERS = [
+       [midi_has(status=0x99, data1=pad_id) for pad_id in row_ids]
+        for row_ids in DRUM_PAD_IDS
+    ]
+
+    DRUM_PAD_UP_MATCHERS = [
+        [midi_has(status=0x89, data1=pad_id) for pad_id in row_ids]
+        for row_ids in DRUM_PAD_IDS
+    ]
+
     # Data1 codes for the encoder.
     ENCODER_IDS = [0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C]
     ENCODER_MAP = {eid: idx for idx, eid in enumerate(ENCODER_IDS)}
+    ENCODER_MATCHERS = [midi_has(status_range=(0xB0, 0xBF), data1=enc_id)
+                        for enc_id in ENCODER_IDS]
 
+    @staticmethod
+    def is_encoder(idx):
+        """ Returns a matcher that matches to the specified encoder index. """
+        return LaunchkeyMk3.ENCODER_MATCHERS[idx]
 
     @staticmethod
     def new_command():

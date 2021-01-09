@@ -6,6 +6,7 @@ import mixer
 from daw import flstudio
 from daw.flstudio import ChannelRack, register, Transport, MixerPanel
 from device_profile.novation import LaunchkeyMk3
+from panels.flstudio.channel import ChannelSelector
 from rum import matchers, scheduling, midi, registry
 from rum.matchers import midi_has, require_all
 from rum.midi import MidiMessage, Midi
@@ -113,16 +114,26 @@ def on_page_up_button(msg: MidiMessage, pressed):
     pass
 
 
+def is_page_up_held(msg: MidiMessage):
+    return registry.button_down['>']
+
+
+@ChannelSelector([
+    require_all(is_page_up_held, drum_pad_matcher)
+    for drum_pad_matcher in LaunchkeyMk3.DRUM_PAD_DOWN_MATCHERS[0]])
+def on_channel_selected(msg: MidiMessage, button_idx, channel_idx):
+    for idx, pad_id in enumerate(LaunchkeyMk3.DRUM_PAD_IDS[0]):
+        if idx == button_idx:
+            request_set_led(pad_id, 0x10)
+        else:
+            request_set_led(pad_id, 0x0)
+
+
 @trigger_when(LaunchkeyMk3.IS_DRUM_PAD)
 def on_drum_pad(msg: MidiMessage):
     if msg.get_masked_status() == Midi.STATUS_NOTE_ON:
         if registry.button_down['record'] and not  _device.is_pad_recording():
             _device.start_pad_recording(msg)
-            msg.mark_handled()
-        elif registry.button_down['>']:
-            chan = LaunchkeyMk3.CHANNEL_MAP[msg.data1]
-            if chan < ChannelRack.num_channels():
-                ChannelRack.set_active_channel(chan)
             msg.mark_handled()
         elif (not registry.button_down['record'] and
               not _device.is_pad_recording()):
@@ -147,52 +158,44 @@ def on_note_down(msg: MidiMessage):
 # #############################################################################
 #                             ENCODERS   1 - 8
 # #############################################################################
-@encoder('encoder1',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[0]))
+@encoder('encoder1', LaunchkeyMk3.is_encoder(0))
 def on_encoder1(msg: MidiMessage, value):
     # Set master volume to 0
     MixerPanel.set_track_volume(0, value)
     msg.mark_handled()
 
 
-@encoder('encoder2',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[1]))
+@encoder('encoder2', LaunchkeyMk3.is_encoder(1))
 def on_encoder2(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder3',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[2]))
+@encoder('encoder3', LaunchkeyMk3.is_encoder(2))
 def on_encoder3(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder4',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[3]))
+@encoder('encoder4', LaunchkeyMk3.is_encoder(3))
 def on_encoder4(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder5',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[4]))
+@encoder('encoder5', LaunchkeyMk3.is_encoder(4))
 def on_encoder5(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder6',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[5]))
+@encoder('encoder6', LaunchkeyMk3.is_encoder(5))
 def on_encoder6(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder7',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[6]))
+@encoder('encoder7', LaunchkeyMk3.is_encoder(6))
 def on_encoder7(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder8',
-         midi_has(status_range=(0xB0, 0xB9), data1=LaunchkeyMk3.ENCODER_IDS[7]))
+@encoder('encoder8', LaunchkeyMk3.is_encoder(7))
 def on_encoder8(msg: MidiMessage, value):
     bpm = mixer.getCurrentTempo() / 1000
     quarter_beat_interval_ms = 15000 / bpm

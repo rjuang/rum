@@ -1,12 +1,11 @@
 import os.path as path
 import sys
 import unittest
+from unittest.mock import patch, call
+
 from collections import defaultdict
-from unittest.mock import patch, DEFAULT, call
 
 sys.path.append(path.join(path.dirname(path.abspath(__file__)), 'stubs'))
-# Include parent folder
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 # Include FL Studio API stubs
 from daw import flstudio
