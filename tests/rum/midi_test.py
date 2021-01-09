@@ -81,13 +81,13 @@ class MidiProcessorTests(unittest.TestCase):
             2.0 / 127.0,
             midi.get_encoded_value(
                 MidiMessage(0xB0, 0x10, 0x02),
-                differential=True),
+                incremental=True),
             5)
         self.assertAlmostEqual(
             -2.0 / 127.0,
             midi.get_encoded_value(
                 MidiMessage(0xB0, 0x10, 0x42),
-                differential=True),
+                incremental=True),
             5)
 
 

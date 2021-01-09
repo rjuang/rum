@@ -67,7 +67,7 @@ def mark_handled(msg: MidiMessage):
 
 
 def get_encoded_value(msg: MidiMessage, max_val=0x7F, range=(0.0, 1.0),
-                      differential=False):
+                      incremental=False):
     """  Retrieve the encoder value (data2) and remap result to a given range.
 
     This function assumes the msg provided is associated with an encoder. It
@@ -76,11 +76,11 @@ def get_encoded_value(msg: MidiMessage, max_val=0x7F, range=(0.0, 1.0),
 
     :param msg: the msg to retrieve the encoder value from
     :param range: the range to map the values to inclusive (default (0.0, 1.0)
-    :param differential: set to True if the encoded value represents a
-    differential value (+/- delta value)
+    :param incremental: set to True if the encoded value represents an
+     incremental value (+/- delta value)
     :return: the encoder value in the mapped range as a float.
     """
-    if differential:
+    if incremental:
         sign = 1
         if 0b1000000 & msg.data2 > 0:
             sign = -1

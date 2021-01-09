@@ -40,12 +40,12 @@ def encoder(name, matcher_fn, infinite=False):
     :param matcher_fn: matcher function that takes an input MidiMessage
     and returns True if the message corresponds to an encoder update.
     :param infinite: specify True if this is an infinite encoder (and thus,
-    the values produced are differential)
+    the values produced are incremental)
     """
     def decorate(function):
         # Register the function with a default active processor.
         def fn_update(m: midi.MidiMessage):
-            value = midi.get_encoded_value(m, differential=infinite)
+            value = midi.get_encoded_value(m, incremental=infinite)
             registry.encoders[name] = value
             function(m, value)
         (processor.get_processor()

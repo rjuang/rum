@@ -43,7 +43,7 @@ class DefaultDict:
 """ Contains a mapping of button names to whether they are currently held. """
 button_down = DefaultDict(bool)
 
-""" Contains a mapping of all encoders to the accumulated differential value of 
+""" Contains a mapping of all encoders to the accumulated incremental value of 
 the encoder. """
 encoders = DefaultDict(float)
 
