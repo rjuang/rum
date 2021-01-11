@@ -1,14 +1,12 @@
-from device_profile.command import MidiCommandBuilder
-from rum.matchers import require_all, masked_status_eq, data1_eq, note_on, \
-    channel_eq, note_off, data1_in_range, midi_has
+from device_profile.abstract import MidiCommandBuilder, DeviceProfile
+from rum import displays
+from rum.matchers import midi_has
 
 
-class LaunchkeyMk3(MidiCommandBuilder):
-    """ MIDI Command structure for Novation LaunchkeyMk3. """
-
+class MiniMk3:
     # Reference:
     # https://www.kraftmusic.com/media/ownersmanual/Novation_Launchkey_Programmers_Reference_Manual.pdf
-    _CMD_PREAMBLE = bytes([
+    CMD_PREAMBLE = bytes([
         0x9F, 0x0C, 0x00,   # Exit DAW mode (defaults to drum layout
     ])
 
@@ -41,7 +39,7 @@ class LaunchkeyMk3(MidiCommandBuilder):
     IS_DRUM_PAD = midi_has(status_in=[0x89, 0x99], data1_range=(0x24, 0x33))
 
     DRUM_PAD_DOWN_MATCHERS = [
-       [midi_has(status=0x99, data1=pad_id) for pad_id in row_ids]
+        [midi_has(status=0x99, data1=pad_id) for pad_id in row_ids]
         for row_ids in DRUM_PAD_IDS
     ]
 
@@ -59,11 +57,14 @@ class LaunchkeyMk3(MidiCommandBuilder):
     @staticmethod
     def is_encoder(idx):
         """ Returns a matcher that matches to the specified encoder index. """
-        return LaunchkeyMk3.ENCODER_MATCHERS[idx]
+        return MiniMk3.ENCODER_MATCHERS[idx]
 
+
+class MiniMk3MidiCommandBuilder(MidiCommandBuilder):
+    """ MIDI Command structure for Novation MiniMk3MidiCommandBuilder. """
     @staticmethod
     def new_command():
-        return LaunchkeyMk3()
+        return MiniMk3MidiCommandBuilder()
 
     def __init__(self):
         super().__init__()
@@ -77,7 +78,7 @@ class LaunchkeyMk3(MidiCommandBuilder):
                 (led_id_color_args[i], led_id_color_args[i + 1]))
         return self
 
-    def build(self):
+    def build(self, daw_mode=True):
         # Start with the lights
         cmd = bytes()
         if (self.param_lights_to_turn_off
@@ -85,22 +86,40 @@ class LaunchkeyMk3(MidiCommandBuilder):
                 or self.param_lights_to_set_colors
                 or self.param_lights_to_blink):
 
-            cmd += LaunchkeyMk3._CMD_PREAMBLE
+            if daw_mode:
+                # If not in DAW mode, don't prepend the command pre-amble
+                cmd += MiniMk3.CMD_PREAMBLE
+
             for led_id in self.param_lights_to_turn_off:
-                cmd += bytes([LaunchkeyMk3.SOLID_LED_STATUS_CMD, led_id, 0x00])
+                cmd += bytes([MiniMk3.SOLID_LED_STATUS_CMD,
+                              led_id,
+                              0x00])
 
             for led_id in self.param_lights_to_turn_on:
-                cmd += bytes([LaunchkeyMk3.SOLID_LED_STATUS_CMD, led_id, 0x77])
+                cmd += bytes([MiniMk3.SOLID_LED_STATUS_CMD,
+                              led_id,
+                              0x77])
 
             for led_id, led_value in self.param_lights_to_set_colors:
-                cmd += bytes(
-                    [LaunchkeyMk3.SOLID_LED_STATUS_CMD, led_id, led_value])
+                cmd += bytes([MiniMk3.SOLID_LED_STATUS_CMD,
+                              led_id,
+                              led_value])
 
             for led_id, led_value in self.param_lights_to_blink:
-                cmd += bytes(
-                    [LaunchkeyMk3.BLINK_LED_STATUS_CMD, led_id, led_value])
+                cmd += bytes([MiniMk3.BLINK_LED_STATUS_CMD,
+                              led_id,
+                              led_value])
 
         if self.param_display_updates:
             # No display on the Launchkey mini mk3
             pass
         return cmd
+
+
+class MiniMk3DeviceProfile(DeviceProfile):
+    def new_midi_command_builder(self):
+        return MiniMk3MidiCommandBuilder()
+
+    def new_display(self, daw_mode=True):
+        # No-op displays since no displays exists.
+        return displays.DirectDisplay(0, 0)

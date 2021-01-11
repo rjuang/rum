@@ -132,8 +132,9 @@ def register(function):
     """
     def init_function():
         # Force a full refresh when script attached.
+        value = function()
         autorefresh.get_refresh_manager().refresh(autorefresh.FULL_REFRESH)
-        return function()
+        return value
 
     def idle_function():
         scheduling.get_scheduler().idle()

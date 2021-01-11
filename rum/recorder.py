@@ -54,6 +54,10 @@ class Recorder:
         """ Return true if currently recording a pattern. """
         return self._recording_pattern_id is not None
 
+    def has_pattern(self, pattern_id):
+        """ Returns true if a pattern exists for the given pattern id. """
+        return pattern_id in self._pattern_map and self._pattern_map[pattern_id]
+
     def get_recording_pattern_id(self):
         """ Returns the pattern id that is currently being recorded. """
         return self._recording_pattern_id

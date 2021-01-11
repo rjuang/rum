@@ -1,6 +1,6 @@
 import unittest
 
-from device_profile.command import MidiCommandBuilder
+from device_profile.abstract import MidiCommandBuilder
 
 
 class MidiCommandBuilderTest(unittest.TestCase):

@@ -128,7 +128,47 @@ class ColorToggleLight(ToggleLight):
 
     def set(self, value, force_update=False):
         self._light.set(value, force_update=force_update)
+        return self
+
+    def set_off_color(self, off_color):
+        self._off_color = off_color
+        return self
+
+    def set_on_color(self, on_color):
+        self._on_color = on_color
+        return self
 
     def __repr__(self):
         return (f'[ColorToggleLight: {"ON" if bool(self) else "OFF"} '
                 f'| {self._light}]')
+
+
+class ColorLightGroup:
+    def __init__(self, lights: 'list[ColorToggleLight]'):
+        self._lights = lights
+
+    def __getitem__(self, index):
+        return self._lights[index]
+
+    def __setitem__(self, index, color):
+        self._lights[index].set(color)
+
+    def __len__(self):
+        return len(self._lights)
+
+    def set_all_off_color(self, color):
+        for light in self._lights:
+            light.set_off_color(color)
+
+    def set_all_on_color(self, color):
+        for light in self._lights:
+            light.set_on_color(color)
+
+    def toggle_all(self, bool_value=None):
+        for light in self._lights:
+            light.toggle(bool_value=bool_value)
+
+    def set_all(self, color):
+        for light in self._lights:
+            light.set(color)
+

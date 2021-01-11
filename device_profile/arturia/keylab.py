@@ -1,7 +1,7 @@
-from device_profile.command import MidiCommandBuilder
+from device_profile.abstract import MidiCommandBuilder
 
 
-class KeylabMk2(MidiCommandBuilder):
+class Mk2(MidiCommandBuilder):
     """ MIDI Command structure for Arturia Keylab 61 mk2. """
 
     CMD_BEGIN = bytes([0xF0, 0x00, 0x20, 0x6B, 0x7F, 0x42])
@@ -16,8 +16,8 @@ class KeylabMk2(MidiCommandBuilder):
         if (self.param_lights_to_turn_off
                 or self.param_lights_to_turn_on
                 or self.param_lights_to_set_colors):
-            cmd += KeylabMk2.CMD_BEGIN
-            cmd += KeylabMk2.CMD_SET_LIGHTS
+            cmd += Mk2.CMD_BEGIN
+            cmd += Mk2.CMD_SET_LIGHTS
             for led_id in self.param_lights_to_turn_off:
                 cmd += bytes([led_id, 0])
 
@@ -26,17 +26,17 @@ class KeylabMk2(MidiCommandBuilder):
 
             for led_id, led_value in self.param_lights_to_set_colors:
                 cmd += bytes([led_id, led_value])
-            cmd += KeylabMk2.CMD_END
+            cmd += Mk2.CMD_END
 
         # Now deal with the display
         if self.param_display_updates:
             # Keylab 61 only has 1 display, so just fetch the last update.
             lines = self.param_display_updates[-1]
-            cmd += KeylabMk2.CMD_BEGIN
-            cmd += KeylabMk2.CMD_SET_DISPLAY
+            cmd += Mk2.CMD_BEGIN
+            cmd += Mk2.CMD_SET_DISPLAY
             cmd += bytes([0x1]) + bytes(lines[0], 'ascii') + bytes([0x00])
             if len(lines) >= 2:
                 cmd += bytes([0x2]) + bytes(lines[1], 'ascii') + bytes([0x00])
             cmd += bytes([0x7F])
-            cmd += KeylabMk2.CMD_END
+            cmd += Mk2.CMD_END
         return cmd
