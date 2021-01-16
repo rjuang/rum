@@ -70,6 +70,13 @@ class DefaultDictTests(unittest.TestCase):
         self.assertEqual(False, 3 in self._dict)
         self.assertEqual(0, len(self._dict))
 
+    def test_getKeysWhenEmpty_isEmpty(self):
+        self.assertEqual([], list(self._dict.keys()))
+
+    def test_getKeysWhenPopulated_containsKeys(self):
+        self._dict[3] = 4
+        self._dict[4] = 1
+        self.assertEqual([3, 4], list(self._dict.keys()))
 
 
 if __name__ == '__main__':

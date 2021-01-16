@@ -151,7 +151,7 @@ def register(function):
         autorefresh.get_refresh_manager().refresh(flags)
         return function(flags)
 
-    def fullrefresh_function():
+    def full_refresh_function():
         autorefresh.get_refresh_manager().refresh(autorefresh.FULL_REFRESH)
         return function()
 
@@ -164,7 +164,7 @@ def register(function):
     elif function.__name__ == 'OnInit':
         return init_function
     elif function.__name__ == 'OnDoFullRefresh':
-        return fullrefresh_function
+        return full_refresh_function
 
     # Default to the undecorated function if we don't care
     return function

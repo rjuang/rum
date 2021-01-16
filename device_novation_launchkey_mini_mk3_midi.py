@@ -1,18 +1,17 @@
 # name=RUM Novation Launchkey Mini Mk3 MIDI
 # url=https://github.com/rjuang/rum
 # receiveFrom=RUM Novation Launchkey Mini Mk3 DAW
-import mixer
 
 from daw import flstudio
-from daw.flstudio import ChannelRack, register, Transport, MixerPanel
+from daw.flstudio import register, Transport, MixerPanel
 from device_profile.novation.launchkey.mini_mk3 import \
-    MiniMk3MidiCommandBuilder, MiniMk3
+    MiniMk3
+from panels.flstudio import recorder
 from panels.flstudio.channel import ChannelSelector
-from rum import matchers, scheduling, registry
-from rum.decorators import trigger_when, encoder, button
+from rum import matchers, registry
+from rum.decorators import encoder, button
 from rum.matchers import midi_has, require_all, is_not
-from rum.midi import MidiMessage, Midi
-from rum.recorder import Recorder
+from rum.midi import MidiMessage
 
 DEBUG = True
 
@@ -31,67 +30,57 @@ def request_blink_led(led_id, value):
         value)
 
 
-def play_note(msg: MidiMessage):
-    if msg.get_masked_status() == Midi.STATUS_NOTE_ON:
-        ChannelRack.play_midi_note(
-            msg.userdata['active_channelrack_index'],
-            msg.data1,
-            msg.data2)
-    elif msg.get_masked_status() == Midi.STATUS_NOTE_OFF:
-        ChannelRack.play_midi_note(
-            msg.userdata['active_channelrack_index'],
-            msg.data1,
-            0)
-
 class Device:
     """ Holds various states of the keyboard. """
     def __init__(self):
-        self.profile = MiniMk3MidiCommandBuilder()
         # Notes that are currently pressed down.
-        self.note_down = set()
-        self.recorder = Recorder(scheduling.get_scheduler(),
-                                 playback_fn=play_note)
+        self.recorder = recorder.get_recorder()
         self.play_pad_press = None
-        self.stop_pad_press = None
-        self.last_loop = None
-        self.current_loop_delay_ms = 0
-
-    def is_pad_recording(self):
-        return self.recorder.is_recording()
-
-    def start_pad_recording(self, msg: MidiMessage):
-        request_blink_led(msg.data1, 0x05)
-        self.recorder.start_recording((msg.status, msg.data1))
-
-    def stop_pad_recording(self):
-        pattern_id = self.recorder.get_recording_pattern_id()
-        led_id = self.recorder.get_recording_pattern_id()[1]
-        self.recorder.stop_recording()
-        color = 0
-        if self.recorder.has_pattern(pattern_id):
-            color = 0x5C
-        request_set_led(led_id, color)
-
-    def play_pad_pattern(self, msg: MidiMessage, loop=False):
-        if loop:
-            self.last_loop = (msg.status, msg.data1)
-        return self.recorder.play((msg.status, msg.data1), loop=loop,
-                                  loop_delay_ms=self.current_loop_delay_ms)
+        self.stop_record_issued = False
+        self.stop_command_issued = False
 
 
 _device = Device()
+
+
+def is_record_held(msg: MidiMessage):
+    return registry.button_down['record']
+
+
+def is_pad_recording(msg: MidiMessage):
+    return recorder.get_recorder().is_recording()
+
+
+@recorder.RecordPattern(require_all(is_record_held, MiniMk3.IS_DRUM_PAD))
+def on_start_recording_pad(pattern_id):
+    request_blink_led(pattern_id[1], 0x05)
+
+
+@recorder.StopRecordPattern(
+    require_all(is_pad_recording,
+                MiniMk3.IS_RECORD_BUTTON,
+                matchers.IS_ON))
+def on_stop_recording_pad(pattern_id):
+    request_set_led(pattern_id[1], 0x5C)
+    _device.stop_record_issued = True
+
+
+@recorder.StopRecordPattern(
+    require_all(is_pad_recording,
+                MiniMk3.IS_PAGE_DOWN_BUTTON,
+                matchers.IS_ON))
+def on_stop_recording_pad_stop(pattern_id):
+    request_set_led(pattern_id[1], 0x5C)
 
 
 @button('record',
         require_all(MiniMk3.IS_RECORD_BUTTON, matchers.IS_ON),
         require_all(MiniMk3.IS_RECORD_BUTTON, matchers.IS_OFF))
 def on_record_button(msg: MidiMessage, pressed):
-    if pressed:
-        if _device.is_pad_recording():
-            _device.stop_pad_recording()
-    else:
-        if not _device.is_pad_recording():
+    if not pressed:
+        if not _device.stop_record_issued and not is_pad_recording(msg):
             Transport.record()
+        _device.stop_record_issued = False
     msg.mark_handled()
 
 
@@ -106,16 +95,30 @@ def on_play_button(msg: MidiMessage, pressed):
             Transport.toggle_play()
 
 
+def is_play_button_held(msg: MidiMessage):
+    return registry.button_down['play']
+
+
 @button('stop',
         require_all(MiniMk3.IS_PAGE_DOWN_BUTTON, matchers.IS_ON),
         require_all(MiniMk3.IS_PAGE_DOWN_BUTTON, matchers.IS_OFF))
 def on_stop_button(msg: MidiMessage, pressed):
-    if not pressed:
-        if _device.recorder.is_recording():
-            _device.stop_pad_recording()
-        else:
-            _device.recorder.stop_all()
+    if pressed:
+        _device.stop_command_issued = False
+    elif not _device.stop_command_issued:
         Transport.stop()
+
+
+def is_stop_button_held(msg: MidiMessage):
+    return registry.button_down['stop']
+
+
+@recorder.StopNow(require_all(
+    is_stop_button_held,
+    MiniMk3.IS_DRUM_PAD,
+))
+def on_stop_playing_pad_now(pattern_id):
+    _device.stop_command_issued = True
 
 
 @button('>',
@@ -140,32 +143,58 @@ def on_channel_selected(button_idx, channel_idx):
             request_set_led(pad_id, 0x0)
 
 
-@trigger_when(MiniMk3.IS_DRUM_PAD, is_not(is_page_up_held))
-def on_drum_pad(msg: MidiMessage):
-    if msg.get_masked_status() == Midi.STATUS_NOTE_ON:
-        if registry.button_down['record'] and not  _device.is_pad_recording():
-            _device.start_pad_recording(msg)
-            msg.mark_handled()
-        elif (not registry.button_down['record'] and
-              not _device.is_pad_recording()):
-            loop = registry.button_down['play']
-            if _device.play_pad_pattern(msg, loop=loop):
-                _device.play_pad_press = (msg.status, msg.data1)
-                msg.mark_handled()
+@recorder.PlayPattern(require_all(
+    MiniMk3.IS_DRUM_PAD,
+    is_not(is_stop_button_held),
+    is_not(is_play_button_held),
+    is_not(is_page_up_held),
+    is_not(is_record_held),
+    is_not(is_pad_recording)
+))
+def on_play_pattern(pattern_id, is_start):
+    if not is_start:
+        request_set_led(pattern_id[1], 0x5C)
 
 
-@trigger_when(midi_has(status_range=(0x80, 0x9F)))
+@recorder.PlayLoop(require_all(
+    MiniMk3.IS_DRUM_PAD,
+    is_play_button_held,
+    is_not(is_record_held),
+    is_not(is_stop_button_held),
+    is_not(is_pad_recording)))
+def on_toggle_play_loop(pattern_id, is_start):
+    _device.play_pad_press = pattern_id
+    if not is_start:
+        request_set_led(pattern_id[1], 0x5C)
+    else:
+        request_set_led(pattern_id[1], 0x0d)
+
+
+def matches_recording_pattern_id(msg: MidiMessage):
+    pattern_id = _device.recorder.get_recording_pattern_id()
+    if pattern_id is None:
+        return False
+    return MiniMk3.IS_DRUM_PAD(msg) and pattern_id[1] == msg.data1
+
+
+@recorder.EventsForRecording(require_all(
+    midi_has(status_range=(0x80, 0x9F)),
+    is_not(matches_recording_pattern_id)))
 def on_note_event(msg: MidiMessage):
-    if (_device.recorder.is_recording() and
-            msg.data1 == _device.recorder.get_recording_pattern_id()[1] and
-            MiniMk3.IS_DRUM_PAD(msg)):
-        # Don't send the key press we are recording
-        return
+    pass
 
-    # Make sure to include info about the channel rack this is being played
-    # from. NOTE: This doesn't work with locked down channels.
-    msg.userdata['active_channelrack_index'] = ChannelRack.active_channel()
-    _device.recorder.on_data_event(msg.timestamp_ms, msg)
+
+@recorder.StopAll(
+    require_all(
+        MiniMk3.IS_PAGE_DOWN_BUTTON,
+        matchers.IS_OFF,
+        lambda _: not _device.stop_command_issued
+    ))
+def on_stop_all():
+    for pad_id in MiniMk3.DRUM_PAD_IDS[0] + MiniMk3.DRUM_PAD_IDS[1]:
+        pattern_id = (0x99, pad_id)
+        has_pattern = _device.recorder.has_pattern(pattern_id)
+        request_set_led(pad_id, 0x5C if has_pattern else 0x00)
 
 
 # #############################################################################
@@ -207,23 +236,12 @@ def on_encoder7(msg: MidiMessage, value):
     pass
 
 
-@encoder('encoder8', MiniMk3.is_encoder(7))
-def on_encoder8(msg: MidiMessage, value):
-    bpm = mixer.getCurrentTempo() / 1000
-    half_beat_interval_ms = 30000 / bpm
-    # Allow adjustment by quarter of a beat
-    selection = [(i) * half_beat_interval_ms for i in range(8)]
-    idx = int(round((len(selection) - 1) * value))
-    if _device.last_loop is not None:
-        _device.recorder.set_loop_delay(_device.last_loop, selection[idx])
-        print(f'Loop delay set to: {selection[idx]}')
-        _device.current_loop_delay_ms = selection[idx]
-        for btn_idx, led_id in enumerate(MiniMk3.DRUM_PAD_IDS[1]):
-            if btn_idx == idx:
-                request_set_led(led_id, 0x39)
-            else:
-                request_set_led(led_id, 0)
-
+@recorder.SetLoopDelay(MiniMk3.is_encoder(7))
+def on_set_loop_delay(value, loop_delay_ms):
+    selected = int(value * (len(MiniMk3.DRUM_PAD_IDS[1]) - 1))
+    for i in range(len(MiniMk3.DRUM_PAD_IDS[1])):
+        request_set_led(MiniMk3.DRUM_PAD_IDS[1][i],
+                        0x39 if i == selected else 0)
 
 @register
 def OnInit():

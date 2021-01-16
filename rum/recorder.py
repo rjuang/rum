@@ -24,6 +24,8 @@ class Recorder:
         self._loop_task_map = {}
         # Stores the loop delays for the patterns
         self._loop_delays = {}
+        # Stores the pattern id that was last set to play looping
+        self._last_looping_pattern_id = None
 
     def on_data_event(self, timestamp_ms, data):
         """ Called when new data to potentially record is produced.
@@ -54,9 +56,17 @@ class Recorder:
         """ Return true if currently recording a pattern. """
         return self._recording_pattern_id is not None
 
+    def is_playing(self, pattern_id):
+        return (pattern_id in self._play_task_map or
+                pattern_id in self._loop_task_map)
+
+    def is_looping(self, pattern_id):
+        return pattern_id in self._loop_task_map
+
     def has_pattern(self, pattern_id):
         """ Returns true if a pattern exists for the given pattern id. """
-        return pattern_id in self._pattern_map and self._pattern_map[pattern_id]
+        return pattern_id in self._pattern_map and bool(
+            self._pattern_map[pattern_id])
 
     def get_recording_pattern_id(self):
         """ Returns the pattern id that is currently being recorded. """
@@ -66,7 +76,7 @@ class Recorder:
         """ Updates the loop delay for the pattern to the specified value. """
         self._loop_delays[pattern_id] = loop_delay_ms
 
-    def play(self, pattern_id, loop=False, loop_delay_ms=0):
+    def play(self, pattern_id, loop=False, loop_delay_ms=None):
         """ Schedule a pattern for playback when pressed.
 
         :param pattern_id: the pattern to playback.
@@ -83,9 +93,19 @@ class Recorder:
             return False
 
         if loop and pattern_id in self._loop_task_map:
-            # Already playing loop. Don't play the same pattern in loops
-            # twice, but allow overlap if playing once.
-            return True
+            # Already playing loop. Stop the existing loop and start a new
+            # one.
+            self.stop(pattern_id)
+
+        if loop:
+            self._last_looping_pattern_id = pattern_id
+
+        if loop_delay_ms is None:
+            if pattern_id not in self._loop_delays:
+                self._loop_delays[pattern_id] = 0
+                loop_delay_ms = 0
+            else:
+                loop_delay_ms = self._loop_delays[pattern_id]
 
         self._loop_delays[pattern_id] = loop_delay_ms
         self._play_pattern(pattern_id, pattern, loop)
@@ -129,6 +149,10 @@ class Recorder:
             # Cancel any pre-existing loop (just in case) before overwriting.
             self._scheduler.cancel(self._loop_task_map[pattern_id])
         self._loop_task_map[pattern_id] = task
+
+    def get_last_looping_pattern_id(self):
+        """ Gets the pattern id of the last pattern set to play looping. """
+        return self._last_looping_pattern_id
 
     def cancel_loop(self, pattern_id):
         """ Cancel looping for the pattern allowing it to finish playing.

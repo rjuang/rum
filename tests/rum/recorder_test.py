@@ -703,6 +703,185 @@ class RecorderTests(unittest.TestCase):
              18, 0, 10]],
             history)
 
+    def test_whileLoopingCheckIsPlaying_shouldReturnTrue(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self.assertEqual(True, self._recorder.is_playing('even'))
+
+    def test_whileLoopingCheckNonPlayingPattern_shouldReturnFalse(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self.assertEqual(False, self._recorder.is_playing('odd'))
+
+    def test_whileNonLoopPlaybackCheckPlayingPattern_shouldReturnTrue(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=False, loop_delay_ms=1000)
+        self.assertEqual(True, self._recorder.is_playing('even'))
+
+    def test_whileLoopPlaybackIsLoopingPlayingPattern_shouldReturnTrue(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self.assertEqual(True, self._recorder.is_looping('even'))
+
+    def test_whileNonLoopPlaybackPlayingPattern_shouldReturnFalse(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=False, loop_delay_ms=1000)
+        self.assertEqual(False, self._recorder.is_looping('even'))
+
+    def test_afterRecordingCheckValidPattern_shouldReturnTrue(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self.assertEqual(True, self._recorder.has_pattern('even'))
+
+    def test_afterRecordingCheckInvalidPattern_shouldReturnFalse(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self.assertEqual(False, self._recorder.has_pattern('odd'))
+
+    def test_recordingAnEmptyPatternCheckHasPattern_shouldReturnFalse(self):
+        self._recorder.start_recording('even')
+        self._recorder.stop_recording()
+        self.assertEqual(False, self._recorder.has_pattern('even'))
+
+    def test_playNoLoop_lastLoopingShouldBeNone(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=False, loop_delay_ms=1000)
+        self.assertEqual(None, self._recorder.get_last_looping_pattern_id())
+
+    def test_playLoop_lastLoopingShouldBePattern(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._feed_odd_pattern(6000)
+
+        self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self.assertEqual('even', self._recorder.get_last_looping_pattern_id())
+
+    def test_playMultipleLoops_lastLoopingShouldBeLastLoopPattern(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._recorder.start_recording('odd')
+        self._feed_odd_pattern(1000)
+        self._recorder.stop_recording()
+
+        self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self._recorder.play('odd', loop=True, loop_delay_ms=1000)
+        self._recorder.play('adsf', loop=True, loop_delay_ms=1000)
+        self.assertEqual('odd', self._recorder.get_last_looping_pattern_id())
+
+    def test_overwritePatternWithEmptyPatternAndPlay_shouldNotPlay(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+        self._recorder.start_recording('even')
+        self._recorder.stop_recording()
+
+        self.assertEqual(False, self._recorder.play('even'))
+
+    def test_updateLoopDelayStopAndRestartPlaying_loopDelayUpdated(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+
+        result = self._recorder.play('even', loop=True)
+        self._recorder.set_loop_delay('even', 2000)
+        self._recorder.stop_all()
+        self._clock.advance(1)
+        self._scheduler.idle()
+        self._data_played = []
+
+        result = self._recorder.play('even', loop=True)
+        self.assertEqual(True, result)
+
+        # Make sure notes are played back correctly in time.
+        history = []
+
+        self._scheduler.idle()
+        history.append(self._data_played[:])
+
+        for i in range(11):
+            # Each step is 1 second
+            self._clock.advance(1)
+            self._scheduler.idle()
+            history.append(self._data_played[:])
+
+        self.assertEqual([
+            [0, 10],           # Before loop, first idle call
+            [0, 10, 2, 12],    # Loop 0
+            [0, 10, 2, 12, 4, 14],
+            [0, 10, 2, 12, 4, 14, 6, 16],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18],         # w/ loop delay
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18],         # w/ loop delay
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16, 8,
+             18],
+            [0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10, 2, 12, 4, 14, 6, 16, 8,
+             18]],
+            history)
+
+    def test_callingPlayWhilePlaying_restartsPattern(self):
+        self._recorder.start_recording('even')
+        self._feed_even_pattern(1000)
+        self._recorder.stop_recording()
+
+        result = self._recorder.play('even', loop=True)
+        self._clock.advance(2)
+        self._scheduler.idle()
+
+        result = self._recorder.play('even', loop=True, loop_delay_ms=1000)
+        self.assertEqual(True, result)
+
+        # Make sure notes are played back correctly in time.
+        history = []
+
+        self._scheduler.idle()
+        history.append(self._data_played[:])
+
+        for i in range(5):
+            # Each step is 1 second
+            self._clock.advance(1)
+            self._scheduler.idle()
+            history.append(self._data_played[:])
+
+        self.assertEqual([
+            [0, 10, 2, 12, 4, 14, 0, 10],
+            [0, 10, 2, 12, 4, 14, 0, 10, 2, 12],
+            [0, 10, 2, 12, 4, 14, 0, 10, 2, 12, 4, 14],
+            [0, 10, 2, 12, 4, 14, 0, 10, 2, 12, 4, 14, 6, 16],
+            [0, 10, 2, 12, 4, 14, 0, 10, 2, 12, 4, 14, 6, 16, 8, 18],
+            [0, 10, 2, 12, 4, 14, 0, 10, 2, 12, 4, 14, 6, 16, 8, 18, 0, 10]],
+            history)
+
 
 if __name__ == '__main__':
     unittest.main()
