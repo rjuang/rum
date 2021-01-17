@@ -204,12 +204,7 @@ def is_page_up_held(msg: MidiMessage):
     require_all(is_page_up_held, drum_pad_matcher)
     for drum_pad_matcher in MiniMk3.DRUM_PAD_DOWN_MATCHERS[0]])
 def on_channel_selected(button_idx, channel_idx):
-    channel.get_channel_selector()
-    lights.get_panel('drumpad_row1').toggle_all(False)
-    if button_idx < len(MiniMk3.DRUM_PAD_DOWN_MATCHERS[0]):
-        lights.get_panel('drumpad_row1')[button_idx].set_on_color(
-            IDLE_CHANNEL_SELECTED_COLOR)
-        lights.get_panel('drumpad_row1')[button_idx].toggle(True)
+    refresh_lights()
 
 
 @recorder.PlayPattern(require_all(
