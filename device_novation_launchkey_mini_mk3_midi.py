@@ -216,7 +216,7 @@ def on_channel_selected(button_idx, channel_idx):
     is_not(is_pad_recording)
 ))
 def on_play_pattern(pattern_id, is_start):
-    pass
+    refresh_lights()
 
 
 @recorder.PlayLoop(require_all(

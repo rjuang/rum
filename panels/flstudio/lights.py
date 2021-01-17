@@ -5,7 +5,6 @@ from daw import flstudio
 from panels.abstract import Panel
 from rum.midi import MidiMessage
 
-# @LightPanel('drumpad_row1', [0x03, 0x04, 0x05, ... ],
 
 _panels = {}
 
