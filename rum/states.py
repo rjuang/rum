@@ -132,5 +132,5 @@ class IterableState(State):
         return different
 
     def __repr__(self):
-        return f'{self.name()}={self.get()}'
+        return '{}={}'.format(self.name(), self.get())
 

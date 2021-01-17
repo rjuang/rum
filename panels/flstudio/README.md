@@ -10,4 +10,13 @@ current channel.
 The concept of a panel is very DAW specific. One DAW might not have a mixer
 or even a Channel Rack. Thus, panels need to be daw-specific.
 
+# Missing Tests
+
+A running list of classes that need tests. For the sake of development speed or 
+classes that are considered unstable, I've listed the classes below and will
+go back to improve test coverage once the classes under development have
+stabilized:
+
+- panels.flstudio.lights
+- panels.flstudio.recorder
  

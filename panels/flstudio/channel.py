@@ -65,6 +65,13 @@ class ChannelSelector(Panel):
         """
         self._base_index = base_index
 
+    def get_current_button_index(self):
+        channel_idx = flstudio.ChannelRack.active_channel()
+        return channel_idx - self._base_index
+
+    def get_current_channel_index(self):
+        return flstudio.ChannelRack.active_channel()
+
     def _process_message(self, msg: MidiMessage):
         for idx, match_fn in enumerate(self._matchers):
             if match_fn(msg):

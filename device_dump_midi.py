@@ -41,17 +41,17 @@ def dump_api():
 
 
 def generate_stubs(module):
-    print(f'# {module.__name__}.py')
+    print('# {}.py'.format(module.__name__))
     for method_name in dir(module):
         if method_name.startswith('__'):
             continue
         method = getattr(module, method_name)
         if callable(method):
-            print(f'def {method_name}(*args, **kwargs):')
-            print(f'    """ {method.__doc__} """')
-            print(f'    pass')
+            print('def {}(*args, **kwargs):'.format(method_name))
+            print('    """ {} """'.format(method.__doc__))
+            print('    pass')
         else:
-            print(f'{method_name} = {method}')
+            print('{} = {}'.format(method_name, method))
 
 
 def OnInit():

@@ -245,11 +245,11 @@ class ScrollingDisplay(Display):
             self._display[idx] = self._lines[idx]
             return
 
-        padded_line = f'{self._lines[idx]}{" " * self._padding}'
+        padded_line = '{}{}'.format(self._lines[idx], " " * self._padding)
         offset = self._offset_map[idx]
         wrap_len = offset + self._display.width() - len(padded_line)
         wrap_str = padded_line[:wrap_len] if wrap_len > 0 else ''
-        self._display[idx] = f'{padded_line[offset:]}{wrap_str}'
+        self._display[idx] = '{}{}'.format(padded_line[offset:], wrap_str)
         self._offset_map[idx] += self._scroll_amount
         self._offset_map[idx] %= len(padded_line)
         self._scrolling.add(idx)

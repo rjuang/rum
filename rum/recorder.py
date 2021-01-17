@@ -68,6 +68,15 @@ class Recorder:
         return pattern_id in self._pattern_map and bool(
             self._pattern_map[pattern_id])
 
+    def get_patterns(self):
+        """ Returns a list of non-empty valid pattern ids. """
+        return [pattern_id for pattern_id in self._pattern_map.keys()
+                if bool(self._pattern_map[pattern_id])]
+
+    def get_looping_patterns(self):
+        """ Returns a list of patterns that are currently looping. """
+        return list(self._loop_task_map.keys())
+
     def get_recording_pattern_id(self):
         """ Returns the pattern id that is currently being recorded. """
         return self._recording_pattern_id

@@ -56,9 +56,9 @@ class MidiMessage:
         return bytes((self.status, self.data1, self.data2))
 
     def __str__(self):
-        return (f'[MIDI Status=0x{self.status:02X}, '
-                f'Data1=0x{self.data1:02X}, '
-                f'Data2=0x{self.data2:02X}]')
+        return ('[MIDI Status=0x{:02X}, '.format(self.status) +
+                'Data1=0x{:02X}, '.format(self.data1) +
+                'Data2=0x{:02X}]'.format(self.data2))
 
 
 def mark_handled(msg: MidiMessage):

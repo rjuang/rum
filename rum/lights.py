@@ -5,6 +5,10 @@ class Light:
     """ Interface for a light source on the device. """
     def get(self): raise NotImplementedError()
     def set(self, value, force_update=False): raise NotImplementedError()
+
+    def refresh(self):
+        self.set(self.get(), force_update=True)
+
     def __bool__(self): raise NotImplementedError()
 
 
@@ -58,7 +62,7 @@ class OnOffLight(ToggleLight):
                     self._off_fn()
 
     def __repr__(self):
-        return f'[OnOffLight: {"ON" if self._status else "OFF"}]'
+        return '[OnOffLight: {}]'.format("ON" if self._status else "OFF")
 
 
 class ColorLight(Light):
@@ -98,7 +102,7 @@ class ColorLight(Light):
         return self._color != 0
 
     def __repr__(self):
-        return f'[ColorLight: 0x{self._color:02X}]'
+        return '[ColorLight: 0x{:02X}]'.format(self._color)
 
 
 class ColorToggleLight(ToggleLight):
@@ -139,36 +143,6 @@ class ColorToggleLight(ToggleLight):
         return self
 
     def __repr__(self):
-        return (f'[ColorToggleLight: {"ON" if bool(self) else "OFF"} '
-                f'| {self._light}]')
-
-
-class ColorLightGroup:
-    def __init__(self, lights: 'list[ColorToggleLight]'):
-        self._lights = lights
-
-    def __getitem__(self, index):
-        return self._lights[index]
-
-    def __setitem__(self, index, color):
-        self._lights[index].set(color)
-
-    def __len__(self):
-        return len(self._lights)
-
-    def set_all_off_color(self, color):
-        for light in self._lights:
-            light.set_off_color(color)
-
-    def set_all_on_color(self, color):
-        for light in self._lights:
-            light.set_on_color(color)
-
-    def toggle_all(self, bool_value=None):
-        for light in self._lights:
-            light.toggle(bool_value=bool_value)
-
-    def set_all(self, color):
-        for light in self._lights:
-            light.set(color)
-
+        return ('[ColorToggleLight: {} | {}]'.format(
+            "ON" if bool(self) else "OFF",
+            self._light))

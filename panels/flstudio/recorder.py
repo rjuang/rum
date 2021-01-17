@@ -83,7 +83,7 @@ class StopRecordPattern(abstract.Panel):
             return
         if self._stop_matcher(msg):
             pattern_id = _recorder.get_recording_pattern_id()
-            print(f'Stop recording {pattern_id}')
+            print('Stop recording {}'.format(pattern_id))
             _recorder.stop_recording()
             if self._output_fn is not None:
                 self._output_fn(pattern_id)
